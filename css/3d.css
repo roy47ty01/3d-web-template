@@ -1,0 +1,193 @@
+/* =========================================================
+   3D Web Template — css/3d.css
+   ---------------------------------------------------------
+   Depth for static sites, with no build step and no library.
+   Every rule here was shipped on a real page first; the notes
+   in docs/findings.md say which failure each guard prevents.
+
+   Prefix: t3-  (three-d). Safe to drop next to any CSS setup.
+   ========================================================= */
+
+:root {
+  /* How far away the camera sits. Smaller = more dramatic, and
+     more likely to blur text. 900-1200px is the usable range. */
+  --t3-perspective: 1100px;
+
+  /* How far a .t3-pop element rides towards the reader. */
+  --t3-lift: 48px;
+
+  --t3-duration: 0.4s;
+  --t3-ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+
+  /* A stacked shadow reads as a physical edge; one flat drop does not.
+     The inset line is the highlight along the top edge. */
+  --t3-shadow:
+    0 4px 0 rgba(36, 30, 23, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  --t3-shadow-lift:
+    0 10px 0 rgba(36, 30, 23, 0.85),
+    0 22px 34px -20px rgba(36, 30, 23, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+
+  /* The halo. Deliberately a shadow, never a blurred box: see below. */
+  --t3-halo: 0 0 70px -6px rgba(242, 177, 52, 0.45);
+  --t3-halo-dark: 0 0 58px -10px rgba(242, 177, 52, 0.26);
+
+  --t3-ink: #241e17;
+  --t3-paper: #fffdf8;
+  --t3-accent: #b23a1b;
+}
+
+/* ---------- the scene ----------
+   perspective belongs on the PARENT. Put it on the element you are
+   rotating and every child gets its own vanishing point, which looks
+   subtly wrong in a way nobody can name. */
+.t3-scene {
+  perspective: var(--t3-perspective);
+}
+
+/* preserve-3d belongs on the element whose CHILDREN need depth.
+   Without it they flatten into the parent's plane and .t3-pop does nothing. */
+.t3-stage {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform var(--t3-duration) var(--t3-ease);
+}
+
+/* Anything at a second depth. Negative values push it back. */
+.t3-pop {
+  transform: translateZ(var(--t3-lift, 48px));
+}
+
+/* A sticker that hangs over the edge of the scene.
+   Its colours are literal on purpose: it lies on artwork that may stay
+   light in a dark theme, and a themed sticker becomes a hole in the picture. */
+.t3-sticker {
+  position: absolute;
+  margin: 0;
+  max-width: none;
+  padding: 7px 16px 9px;
+  background: #fffdf8;
+  color: #b23a1b;
+  border: 3px solid #241e17;
+  border-radius: 999px;
+  box-shadow: 0 4px 0 rgba(36, 30, 23, 0.85);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  transform: translateZ(52px) rotate(-7deg);
+}
+
+/* The halo, as a shadow.
+   A blurred box inset by negative percentages is WIDER THAN ITS PARENT and
+   forces a horizontal scrollbar on a phone. A box-shadow never joins the
+   scrollable area, so it is the same glow with none of that price. */
+.t3-halo {
+  border-radius: 28px;
+  box-shadow: 0 30px 50px -32px rgba(94, 60, 20, 0.55), var(--t3-halo);
+}
+.t3-dark .t3-halo,
+[data-theme="dark"] .t3-halo {
+  box-shadow: 0 30px 50px -32px rgba(0, 0, 0, 0.8), var(--t3-halo-dark);
+}
+
+/* ---------- cards ---------- */
+.t3-card {
+  box-shadow: var(--t3-shadow);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .t3-card {
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .t3-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--t3-shadow-lift);
+  }
+}
+
+/* ---------- numbered sections, from CSS only ----------
+   No markup changes: add .t3-numbered to the container, give each section
+   an id, and the headings number themselves in page order. */
+.t3-numbered {
+  counter-reset: t3-band;
+}
+.t3-numbered > section[id] {
+  counter-increment: t3-band;
+  position: relative;
+}
+.t3-numbered > section[id] > .wrap > :is(h1, h2, h3)::before {
+  content: counter(t3-band, decimal-leading-zero);
+  display: block;
+  margin: 0 0 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--t3-accent);
+}
+
+/* A giant numeral on a wide screen; a small label on a phone. A 77px
+   number over 20px body text is a mess on a narrow screen. */
+@media (min-width: 761px) {
+  .t3-numbered > section[id] > .wrap > :is(h1, h2, h3)::before {
+    display: none;
+  }
+  .t3-numbered > section[id]::before {
+    content: counter(t3-band, decimal-leading-zero);
+    position: absolute;
+    top: 16px;
+    right: max(20px, calc((100% - 1140px) / 2));
+    font-size: clamp(3rem, 6.5vw, 4.8rem);
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: currentColor;
+    opacity: 0.09;
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+/* ---------- the guards ----------
+   None of these are optional. They are why this is a template and not a demo. */
+
+@media (prefers-reduced-motion: reduce) {
+  .t3-stage,
+  .t3-card {
+    transition: none;
+  }
+  .t3-stage {
+    transform: none !important;
+  }
+}
+
+/* A tilt hides behind a phone thumb, and a fixed element with a transform
+   ancestor stops being fixed. Motion is for pointers only. */
+@media (hover: none), (pointer: coarse) {
+  .t3-stage {
+    transform: none !important;
+  }
+}
+
+/* Printing must not print an empty sticker or a half-rotated card. */
+@media print {
+  .t3-pop,
+  .t3-sticker {
+    display: none !important;
+  }
+  .t3-stage {
+    transform: none !important;
+  }
+}
+
+/* If the reader asks for more contrast, the halo is decoration they did not
+   ask for. Depth survives without it. */
+@media (prefers-contrast: more) {
+  .t3-halo {
+    box-shadow: 0 0 0 3px currentColor;
+  }
+}
