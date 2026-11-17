@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D Web Template — working demo</title>
+<meta name="description" content="A dependency-free demo of the 3D primitives in this template: pointer tilt, layered depth, a sticker in front of the scene, and CSS-numbered sections.">
+<link rel="stylesheet" href="../css/3d.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="#top">3D Web Template</a>
+    <button class="pill" id="theme" type="button" aria-pressed="false">Dark</button>
+  </div>
+</header>
+
+<main class="t3-numbered">
+
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="tag">Working demo</p>
+        <h1>Depth on three elements.</h1>
+        <p class="lede">Move a mouse across the card on the right. The stage tilts a few degrees, the sticker rides in front of it, and the halo stays a shadow so it can never become a scrollbar.</p>
+        <p class="lede note">On a phone, or with reduced motion turned on, nothing moves. That is the design, not a fallback.</p>
+      </div>
+
+      <div class="t3-scene" data-t3-tilt>
+        <div class="t3-stage" data-t3-stage>
+          <div class="art t3-halo">
+            <span class="blob blob-a" aria-hidden="true"></span>
+            <span class="blob blob-b" aria-hidden="true"></span>
+            <span class="art-label">&pound;25</span>
+          </div>
+          <p class="t3-sticker">Sold</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="parts">
+    <div class="wrap">
+      <h2>Three parts, no library</h2>
+      <p class="lede">Every card below is one class. Hover one to see the lift.</p>
+
+      <div class="cards">
+        <article class="card t3-card">
+          <h3>Scene</h3>
+          <p><code>perspective</code> lives on the parent, so every child shares one vanishing point. Put it on the child and a row of rotated cards looks wrong in a way nobody can name.</p>
+        </article>
+        <article class="card t3-card">
+          <h3>Stage</h3>
+          <p><code>preserve-3d</code> goes on the element whose children need depth. Without it they flatten into its plane and <code>translateZ</code> does nothing at all.</p>
+        </article>
+        <article class="card t3-card">
+          <h3>Pop</h3>
+          <p>Anything at <code>translateZ</code> is a second depth. One or two per scene is enough. Ten is a fairground, and the reader stops reading.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band cream" id="guards">
+    <div class="wrap">
+      <h2>What this template refuses to do</h2>
+      <ul class="rules">
+        <li><strong>No tilt on touch.</strong> The pointer engine checks <code>(hover: hover) and (pointer: fine)</code> before it binds anything.</li>
+        <li><strong>No motion on request.</strong> <code>prefers-reduced-motion</code> turns the stage off in both CSS and JS.</li>
+        <li><strong>No blurred boxes as halos.</strong> A blurred element inset by negative percentages is wider than its parent and gives a phone a horizontal scrollbar. Use <code>.t3-halo</code>, which is a shadow.</li>
+        <li><strong>No backdrop blur above a fixed drawer.</strong> <code>backdrop-filter</code> makes its element the containing block for fixed children, which pins a mobile menu to the header instead of the screen.</li>
+        <li><strong>No dependency.</strong> Two files, no build step, no network request.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Copy <code>css/3d.css</code> and <code>js/scene.js</code>. Delete this demo. Keep the guards.</p>
+  </div>
+</footer>
+
+<script src="../js/scene.js"></script>
+<script>
+  (function () {
+    var btn = document.getElementById("theme");
+    var root = document.documentElement;
+    btn.addEventListener("click", function () {
+      var dark = root.getAttribute("data-theme") === "dark";
+      root.setAttribute("data-theme", dark ? "light" : "dark");
+      btn.setAttribute("aria-pressed", dark ? "false" : "true");
+      btn.textContent = dark ? "Dark" : "Light";
+    });
+  })();
+</script>
+</body>
+</html>
