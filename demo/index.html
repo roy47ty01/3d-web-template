@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3D Web Template — working demo</title>
-<meta name="description" content="A dependency-free demo of the 3D primitives in this template: pointer tilt, layered depth, a sticker in front of the scene, and CSS-numbered sections.">
+<meta name="description" content="A dependency-free demo of the 3D primitives in this template: a layered hero that recedes on scroll, a sticker in front of the scene, photos set into cards, and CSS-numbered sections.">
 <link rel="stylesheet" href="../css/3d.css">
 <link rel="stylesheet" href="demo.css">
 </head>
@@ -19,24 +19,66 @@
 
 <main class="t3-numbered">
 
-  <section class="hero" id="top">
-    <div class="wrap hero-grid">
-      <div>
-        <p class="tag">Working demo</p>
-        <h1>Depth on three elements.</h1>
-        <p class="lede">Move a mouse across the card on the right. The stage tilts a few degrees, the sticker rides in front of it, and the halo stays a shadow so it can never become a scrollbar.</p>
-        <p class="lede note">On a phone, or with reduced motion turned on, nothing moves. That is the design, not a fallback.</p>
-      </div>
+  <section class="t3-hero" id="top">
+    <div class="wrap t3-scene" data-t3-tilt data-t3-hero>
+      <div class="t3-split" data-t3-stage>
 
-      <div class="t3-scene" data-t3-tilt>
-        <div class="t3-stage" data-t3-stage>
-          <div class="art t3-halo">
-            <span class="blob blob-a" aria-hidden="true"></span>
-            <span class="blob blob-b" aria-hidden="true"></span>
-            <span class="art-label">&pound;25</span>
-          </div>
-          <p class="t3-sticker">Sold</p>
+        <div class="t3-copy-front">
+          <p class="tag">Working demo</p>
+          <h1>Depth on three layers, one camera.</h1>
+          <p class="lede">Move the mouse across this half of the screen. The words sit 90px in front of the frame, the small photo 130px behind it, and the sticker 190px forward. On a phone, or with reduced motion on, it is an ordinary column.</p>
+          <p class="lede note">Scroll down: the whole stage recedes along z, so the page moves into the picture rather than past it.</p>
         </div>
+
+        <figure class="t3-photo t3-photo-main">
+          <svg viewBox="0 0 800 600" role="img" aria-label="A rail of coats under a warm shop light">
+            <defs>
+              <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#F6E3C2"/>
+                <stop offset="1" stop-color="#D9BE97"/>
+              </linearGradient>
+              <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#8B5E3C"/>
+                <stop offset="1" stop-color="#5C3A24"/>
+              </linearGradient>
+            </defs>
+            <rect width="800" height="600" fill="url(#wall)"/>
+            <rect y="470" width="800" height="130" fill="#3A2A1D" opacity="0.55"/>
+            <rect x="60" y="70" width="680" height="14" rx="7" fill="url(#wood)"/>
+            <g>
+              <path d="M120 70h120l18 300H102z" fill="#7A3B2E"/>
+              <path d="M250 70h120l10 300H240z" fill="#2F5B57"/>
+              <path d="M380 70h120l2 300H372z" fill="#C08A28"/>
+              <path d="M510 70h120l-8 300H498z" fill="#4A4038"/>
+              <path d="M640 70h100l-16 300H624z" fill="#8C6A9B"/>
+            </g>
+            <g fill="#241E17" opacity="0.55">
+              <circle cx="180" cy="70" r="7"/>
+              <circle cx="310" cy="70" r="7"/>
+              <circle cx="440" cy="70" r="7"/>
+              <circle cx="570" cy="70" r="7"/>
+              <circle cx="690" cy="70" r="7"/>
+            </g>
+            <circle cx="690" cy="120" r="54" fill="#F2B134" opacity="0.55"/>
+          </svg>
+        </figure>
+
+        <figure class="t3-photo t3-photo-back">
+          <svg viewBox="0 0 600 800" role="img" aria-label="A hanging shirt, photographed from below">
+            <defs>
+              <linearGradient id="back" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#DCE7DF"/>
+                <stop offset="1" stop-color="#9FB6A6"/>
+              </linearGradient>
+            </defs>
+            <rect width="600" height="800" fill="url(#back)"/>
+            <ellipse cx="300" cy="250" rx="190" ry="230" fill="#56705C" opacity="0.6"/>
+            <path d="M300 120l160 90-40 60-60-30v360H240V240l-60 30-40-60z" fill="#254238"/>
+            <circle cx="300" cy="150" r="26" fill="#E9DCCB"/>
+          </svg>
+        </figure>
+
+        <p class="t3-sticker t3-sticker--float">Layered</p>
       </div>
     </div>
   </section>
@@ -44,18 +86,37 @@
   <section class="band" id="parts">
     <div class="wrap">
       <h2>Three parts, no library</h2>
-      <p class="lede">Every card below is one class. Hover one to see the lift.</p>
+      <p class="lede">Every card below is three classes. Hover one to see it lift and lean.</p>
 
-      <div class="cards">
-        <article class="card t3-card">
+      <div class="cards t3-cards">
+        <article class="card t3-card t3-turn" data-t3-card data-t3-turn>
+          <svg class="t3-card-photo" viewBox="0 0 800 400" role="img" aria-label="Three overlapping panels">
+            <rect width="800" height="400" fill="#F2B134"/>
+            <rect x="70" y="90" width="220" height="230" rx="16" fill="#FFFDF8" opacity="0.85"/>
+            <rect x="290" y="60" width="220" height="260" rx="16" fill="#241E17" opacity="0.8"/>
+            <rect x="510" y="110" width="220" height="210" rx="16" fill="#FFFDF8" opacity="0.6"/>
+          </svg>
           <h3>Scene</h3>
           <p><code>perspective</code> lives on the parent, so every child shares one vanishing point. Put it on the child and a row of rotated cards looks wrong in a way nobody can name.</p>
         </article>
-        <article class="card t3-card">
+        <article class="card t3-card t3-turn" data-t3-card data-t3-turn>
+          <svg class="t3-card-photo" viewBox="0 0 800 400" role="img" aria-label="A tilted plane">
+            <rect width="800" height="400" fill="#0E5F62"/>
+            <path d="M120 300L400 120l260 180-260 80z" fill="#FFFDF8" opacity="0.85"/>
+            <path d="M120 300l260 80v-40l-260-60z" fill="#241E17" opacity="0.7"/>
+          </svg>
           <h3>Stage</h3>
           <p><code>preserve-3d</code> goes on the element whose children need depth. Without it they flatten into its plane and <code>translateZ</code> does nothing at all.</p>
         </article>
-        <article class="card t3-card">
+        <article class="card t3-card t3-turn" data-t3-card data-t3-turn>
+          <svg class="t3-card-photo" viewBox="0 0 800 400" role="img" aria-label="Layers at different depths">
+            <rect width="800" height="400" fill="#B23A1B"/>
+            <g fill="#FFFDF8">
+              <rect x="120" y="230" width="240" height="90" rx="12" opacity="0.5"/>
+              <rect x="180" y="170" width="240" height="90" rx="12" opacity="0.75"/>
+              <rect x="240" y="110" width="240" height="90" rx="12"/>
+            </g>
+          </svg>
           <h3>Pop</h3>
           <p>Anything at <code>translateZ</code> is a second depth. One or two per scene is enough. Ten is a fairground, and the reader stops reading.</p>
         </article>
@@ -68,8 +129,9 @@
       <h2>What this template refuses to do</h2>
       <ul class="rules">
         <li><strong>No tilt on touch.</strong> The pointer engine checks <code>(hover: hover) and (pointer: fine)</code> before it binds anything.</li>
-        <li><strong>No motion on request.</strong> <code>prefers-reduced-motion</code> turns the stage off in both CSS and JS.</li>
-        <li><strong>No blurred boxes as halos.</strong> A blurred element inset by negative percentages is wider than its parent and gives a phone a horizontal scrollbar. Use <code>.t3-halo</code>, which is a shadow.</li>
+        <li><strong>No motion on request.</strong> <code>prefers-reduced-motion</code> turns the stage off in both CSS and JS, and the scroll recede never binds.</li>
+        <li><strong>No blurred boxes as halos.</strong> A blurred element inset by negative percentages is wider than its parent and gives a phone a horizontal scrollbar. <code>.t3-photo</code> and <code>.t3-halo</code> use a <code>box-shadow</code>, which is never part of the scrollable area.</li>
+        <li><strong>No bleed on a phone.</strong> Below 980px the layered hero becomes a column. The photo that leaves the page needs a page wide enough to leave.</li>
         <li><strong>No backdrop blur above a fixed drawer.</strong> <code>backdrop-filter</code> makes its element the containing block for fixed children, which pins a mobile menu to the header instead of the screen.</li>
         <li><strong>No dependency.</strong> Two files, no build step, no network request.</li>
       </ul>
