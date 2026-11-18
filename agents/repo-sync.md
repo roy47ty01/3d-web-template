@@ -13,8 +13,8 @@ TARGET_REPO    = roy47ty01/3d-web-template   (branch: main)
 
 ## Read first
 
-1. `docs/findings.md` in the target repo — the traps. A change that re-introduces
-   one is rejected, not debated.
+1. `docs/findings.md` in the target repo — the seven traps. A change that
+   re-introduces one is rejected, not debated.
 2. `css/3d.css` and `js/scene.js` — the existing vocabulary. Reuse it.
 3. The source project's `agents/feature-map.md`, if it has one, so you know which
    file actually holds the behaviour you are porting.
@@ -28,10 +28,10 @@ TARGET_REPO    = roy47ty01/3d-web-template   (branch: main)
 3. **No project copy?** No prices, no shop names, no section names, no dates, no
    claims. Strings become placeholders or disappear.
 4. **No guard weakened?** Reduced motion, pointer-only, print, contrast and the
-   five traps survive. Never port a change that only works because the source page
-   is not a phone.
+   seven traps survive. Never port a change that only works because the source
+   page is not a phone.
 
-If it fails, record why in `CHANGELOG.md` under "Not ported" and stop.
+If it fails the test, record why in `CHANGELOG.md` under "Not ported" and stop.
 
 ## Procedure
 
@@ -44,7 +44,7 @@ If it fails, record why in `CHANGELOG.md` under "Not ported" and stop.
    names (`.hero-chip`, `.band`) never appear in the template.
 4. **Exercise it in `demo/`.** A primitive with no demo is a claim, not a feature.
 5. **Write the trap down** if the change came from a bug. Add it to
-   `docs/findings.md` under "The five traps" with the failing code and the fix.
+   `docs/findings.md` under "The seven traps" with the failing code and the fix.
 6. **Verify** (below), then commit in one go.
 7. **Report** what was ported, what was left behind, and why.
 
@@ -58,6 +58,9 @@ python3 -m http.server 3000 --bind 0.0.0.0   # then open /demo/
 In a browser, on the demo:
 
 - [ ] Pointer move tilts the stage; leaving resets it.
+- [ ] Scrolling pushes the stage **back**: read `getComputedStyle(stage).transform`
+  at four offsets and confirm the `translateZ` value is zero at the top and
+  negative afterwards. A positive value is trap 6.
 - [ ] Document width **equals** viewport width at 320, 390, 768 and 1280.
   (`document.documentElement.scrollWidth === clientWidth` — measure it, do not eyeball it.)
 - [ ] With `prefers-reduced-motion: reduce` emulated, the stage never transforms.
@@ -91,7 +94,8 @@ a new primitive, major for a change that breaks an existing class or token.
 
 ## Hard constraints
 
-- **Never** make the repository public. It is private on purpose. Ask the owner.
+- **Never** change the repository's visibility without the owner asking. It is
+  public now, on purpose; a template nobody can open is not a template.
 - **Never** force-push, rewrite history, or delete a file someone else added.
 - **Never** add a dependency, a CDN link, a font from a third party, or a build step.
 - **Never** copy copy. No source-project prose, figures, shop names or claims.
