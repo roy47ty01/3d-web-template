@@ -139,13 +139,56 @@ It runs on the compositor, so it cannot jank the main thread. The `@supports`
 block means browsers without it simply show the content — which is the correct
 failure for a reveal animation.
 
-**Not shipped in `3d.css`**: the classic `IntersectionObserver` version was used
-instead, because a reveal must also be undone for print. Anything held at
-`opacity: 0` prints blank.
+**Not shipped in `3d.css`**: a reveal class driven by `IntersectionObserver` is
+used instead, because a reveal must also be undone for print. Anything held at
+`opacity: 0` prints blank. The hidden state is applied only after `scene.js`
+marks the document, so a page with no script shows every card.
 
-## 4. The five traps
+### 3.7 A hero with layers that leave the page
 
-All five were hit for real; three of them cost a visible bug.
+One scene, three depths, and artwork that runs off the right edge. The camera is
+on the parent; the stage holds the layers; nothing else is needed.
+
+```css
+.hero   { overflow: hidden; }                  /* the window */
+.scene  { perspective: 1400px; perspective-origin: 62% 42%; }
+.split  { display:flex; min-height:700px; transform-style: preserve-3d; }
+.copy   { width:50%; transform: translateZ(90px); }     /* nearest */
+.photo-main { position:absolute; right:-9%; width:55%;
+              transform: rotateY(-9deg) rotateX(2deg); }
+.photo-back { position:absolute; left:52%; bottom:2%; width:22%;
+              transform: translateZ(-130px) rotateY(-6deg); }
+.sticker    { transform: translateZ(190px) rotate(-8deg); }  /* furthest */
+```
+
+Three things make it read as depth rather than as a rotated picture:
+
+1. **The main photo hangs off the edge.** `right: -9%` with `overflow: hidden`
+   on the window, not on the stage. A frame that stops politely at the column
+   edge reads as a screenshot.
+2. **A second photo sits further back than the frame.** Without something
+   behind the front layer, `rotateY` on it is just a skew.
+3. **The copy column is capped at 50%.** Measured: the copy's right edge was
+   713px and the photo's left edge 769px at 1440px wide. A sentence that crosses
+   a photograph is unreadable, and no amount of depth makes it readable.
+
+The scroll recede is the cheapest sense of place on a long page. The stage is
+pushed back along z as the hero leaves:
+
+```js
+var top = scene.getBoundingClientRect().top;   // 0 at rest, negative after
+var z = Math.max(-240, Math.min(0, Math.round(top * 0.45)));
+stage.style.transform =
+  "rotateX(" + rx + "deg) rotateY(" + ry + "deg) translateZ(" + z + "px)";
+```
+
+Measured on the source page: `translateZ` 0 at scroll 0 and 200, -91px at 420,
+-217px at 700. The cap matters: uncapped, a long page ends up as a zoom. The
+sign matters more — see trap 6.
+
+## 4. The seven traps
+
+All seven were hit for real; five of them cost a visible bug.
 
 ### Trap 1 — `perspective` on the child
 
@@ -190,12 +233,71 @@ pinned to the header instead of the screen. Scope the blur:
 
 Tilt is fine on artwork and card chrome. On body copy it costs real readability:
 the glyph stems blur at the extremes, and readers with visual stress notice first.
-Keep text flat and upright, and cap any tilt near text at a few degrees.
+Keep reading text flat and upright, and cap any tilt near text at a few degrees.
+A short hero column is the one exception, and it is short for this reason.
+
+### Trap 6 — the scroll recede with the wrong sign
+
+The recede is one line, and written the obvious way it goes the wrong way:
+
+```js
+// Wrong: z grows positive as the hero leaves, so the scene zooms AT the reader.
+var z = Math.round(scene.getBoundingClientRect().top * -0.45);
+
+// Right: zero at rest, negative once the hero starts up the screen.
+var z = Math.max(-240, Math.min(0, Math.round(top * 0.45)));
+```
+
+`getBoundingClientRect().top` is positive while the hero is below the fold and
+negative once it has scrolled past. A page that only checked the effect at rest
+looks perfect, because at rest the value is zero. It was caught by reading
+`getComputedStyle(stage).transform` at four scroll offsets, not by looking at a
+screenshot.
+
+Two related notes worth keeping next to it:
+
+- **Clip the window, not the stage.** `overflow: hidden` on the element with
+  `perspective` is fine — that is an ancestor clipping its child. `overflow:
+  hidden` **on** the preserve-3d stage flattens its own children, and every
+  `translateZ` silently stops doing anything.
+- **`will-change: transform` on the stage is a hint, not a fix.** It promotes
+  the layer and keeps the recede off the main thread's paint, but it also costs
+  memory per promoted layer. One per page is fine; one per card is not.
+
+### Trap 7 — a lifted photo in a grid is projected sideways
+
+Found while porting the card photo into this template, so it is the one trap
+here that never shipped on the source page.
+
+```css
+.cards { perspective: 1100px; }                /* one camera, at grid centre */
+.card-photo { transform: translateZ(30px); }   /* moves 12px out of the card */
+```
+
+`perspective` on the container puts the camera at the centre of the **grid**.
+A child at `translateZ` is projected away from that point, so a photo in the
+first card slides left and the photo in the last card slides right. Measured at
+1440px: card left edge 143px, its photo's left edge 131px — a 12px overhang
+outside the card's own border, with a matching gap on its right. The middle
+card looks perfect, which is why a screenshot of one card would never show it.
+
+The fix is not a bigger grid or a smaller lift, it is to stop lifting the
+photo: a full-bleed photo at the card edge and a shared camera cannot both be
+flush and forward-facing. The card itself still tilts, and that is where the
+depth reads.
+
+If you genuinely need the photo to separate, give the card its own
+`perspective` so the camera is at the card's centre, and inset the photo inside
+the card padding (roughly 3% of its width is added on each side at 30px), so
+the expansion lands on padding instead of on the page.
 
 ## 5. The accessibility contract
 
 - **Motion is opt-out, twice.** JS checks before binding; CSS refuses the
-  transform again under `prefers-reduced-motion` and `(pointer: coarse)`.
+  transform again under `prefers-reduced-motion` and `(pointer: coarse)`. The
+  scroll recede never binds at all in either case.
+- **A reveal is progressive.** Cards are hidden only after the script marks the
+  document, so a browser without it sees the content, not a blank column.
 - **Nothing critical depends on depth.** Flatten the page and every number, card
   and sticker is still there and still legible.
 - **Contrast at 4.5:1 minimum for normal-size text.** Depth makes this easy to
