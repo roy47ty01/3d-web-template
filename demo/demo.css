@@ -9,6 +9,12 @@
   --accent: #b23a1b;
   --accent-2: #0e5f62;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* Point the template's own colours at the demo's, so the hero and the photo
+     frames follow the theme instead of staying light in dark mode. A host page
+     sets its own values here rather than restyling .t3-hero. */
+  --t3-paper: var(--paper);
+  --t3-ink: var(--ink);
 }
 
 [data-theme="dark"] {
@@ -78,14 +84,12 @@ code {
 }
 .pill:active { transform: translateY(3px); box-shadow: none; }
 
-/* ---------- hero ---------- */
-.hero { padding: 64px 0 72px; border-bottom: 3px solid var(--line); }
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 48px;
-  align-items: center;
-}
+/* ---------- the layered hero ---------- */
+.t3-hero { border-bottom: 3px solid var(--line); }
+.t3-copy-front { padding: 64px 0 72px; }
+/* The template keeps a sticker's colours literal; here the frame is a frame,
+   so it follows the theme like the rest of the demo. */
+.t3-photo { border-color: var(--line); }
 .tag {
   display: inline-block;
   margin: 0 0 18px;
@@ -108,38 +112,6 @@ h1 {
 .lede { font-size: 1.05rem; max-width: 46ch; margin: 0 0 14px; }
 .note { font-size: 0.92rem; color: var(--muted); }
 
-/* ---------- the artwork in the scene ---------- */
-.art {
-  position: relative;
-  aspect-ratio: 1 / 1;
-  border-radius: 28px;
-  overflow: hidden;
-  background: linear-gradient(135deg, #fcf1da 0%, #f0dcb6 100%);
-  display: grid;
-  place-items: center;
-}
-.blob {
-  position: absolute;
-  border-radius: 50%;
-}
-.blob-a { width: 34%; height: 34%; top: -8%; right: -6%; background: #f2b134; opacity: 0.75; }
-.blob-b { width: 46%; height: 46%; bottom: -10%; left: -8%; background: #9cBBae; opacity: 0.7; }
-.art-label {
-  position: relative;
-  font-size: clamp(2rem, 6vw, 3.2rem);
-  font-weight: 700;
-  color: #b23a1b;
-  background: #fffdf8;
-  border: 4px solid #241e17;
-  border-radius: 14px;
-  padding: 4px 20px 8px;
-  box-shadow: 0 6px 0 rgba(36, 30, 23, 0.85);
-  transform: rotate(-5deg);
-}
-
-/* the sticker starts at the card's top-left corner */
-.t3-sticker { left: 2%; top: 2%; }
-
 /* ---------- bands ---------- */
 .band { padding: 64px 0; border-bottom: 3px solid var(--line); }
 .cream { background: var(--cream); }
@@ -154,9 +126,6 @@ h3 { font-size: 1.1rem; margin: 0 0 8px; }
   padding: 22px;
 }
 .card p { margin: 0; font-size: 0.92rem; }
-.card:nth-child(1) { border-top: 12px solid var(--accent); }
-.card:nth-child(2) { border-top: 12px solid var(--accent-2); }
-.card:nth-child(3) { border-top: 12px solid #f2b134; }
 
 .rules { margin: 20px 0 0; padding-left: 22px; max-width: 72ch; }
 .rules li { margin-bottom: 12px; }
@@ -165,12 +134,12 @@ h3 { font-size: 1.1rem; margin: 0 0 8px; }
 .foot p { margin: 0; font-size: 0.9rem; color: var(--muted); }
 
 @media (max-width: 980px) {
-  .hero-grid { grid-template-columns: 1fr; }
-  .hero-grid .t3-scene { max-width: 420px; }
+  .t3-photo-main { max-width: 420px; }
   .cards { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   body { font-size: 17px; }
   .wrap { width: calc(100% - 28px); }
-  .hero, .band { padding: 44px 0; }
+  .band { padding: 44px 0; }
+  .t3-copy-front { padding: 44px 0 32px; }
 }
