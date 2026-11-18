@@ -6,6 +6,15 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — a new primitive or token.
 - **MAJOR** — an existing class or token changes meaning.
 
+## 0.2.1 — 18 November 2026
+
+**Added**
+
+- `LICENSE` — MIT. The README had said to add a licence before sharing and then
+  shipped none, so "can I use this" had no answer. The CSS, the script, the demo
+  and its SVG figures are all covered; nothing in the box is third-party.
+- The README's file table and licence section now point at it.
+
 ## 0.2.0 — 18 November 2026
 
 Ported from the source project's rebuilt hero: the photo leaves the page, the
