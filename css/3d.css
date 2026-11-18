@@ -16,6 +16,33 @@
   /* How far a .t3-pop element rides towards the reader. */
   --t3-lift: 48px;
 
+  /* The layered hero. Three depths is the whole trick: the words sit
+     nearest, the small photo furthest back, the sticker furthest forward. */
+  --t3-copy-lift: 90px;
+  --t3-depth-back: -130px;
+  --t3-sticker-lift: 190px;
+  --t3-stage-height: 700px;
+  --t3-copy-width: 50%;
+
+  /* Must equal the padding and radius of the card the photo sits in, or the
+     photo stops meeting the card edge. */
+  --t3-card-pad: 22px;
+  --t3-card-radius: 18px;
+  --t3-card-photo-height: 170px;
+
+  /* Warm light behind the artwork, as a shadow. */
+  --t3-photo-shadow:
+    0 44px 74px -42px rgba(36, 30, 23, 0.9),
+    0 0 90px -18px rgba(242, 177, 52, 0.5);
+  --t3-photo-shadow-dark:
+    0 44px 74px -42px rgba(0, 0, 0, 0.95),
+    0 0 70px -22px rgba(242, 177, 52, 0.3);
+
+  /* The wash behind the hero, and where the camera sits. */
+  --t3-wash: rgba(251, 231, 194, 0.95);
+  --t3-wash-dark: rgba(59, 43, 22, 0.9);
+  --t3-camera: 62% 42%;
+
   --t3-duration: 0.4s;
   --t3-ease: cubic-bezier(0.2, 0.7, 0.3, 1);
 
@@ -44,6 +71,9 @@
    subtly wrong in a way nobody can name. */
 .t3-scene {
   perspective: var(--t3-perspective);
+  /* Moves the camera, not the objects: the vanishing point slides towards
+     the artwork in a layered hero. */
+  perspective-origin: var(--t3-camera);
 }
 
 /* preserve-3d belongs on the element whose CHILDREN need depth.
@@ -94,9 +124,143 @@
   box-shadow: 0 30px 50px -32px rgba(0, 0, 0, 0.8), var(--t3-halo-dark);
 }
 
+/* ---------- the layered hero ----------
+   One scene with three depths and artwork that runs off the page edge.
+   .t3-hero is only the window: it clips the photo that bleeds off the right
+   side. The camera sits on .t3-scene inside it, and .t3-split keeps its own
+   overflow visible, which is what stops the clip flattening the depth. */
+.t3-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(105% 85% at 88% 8%, var(--t3-wash) 0%, transparent 60%),
+    var(--t3-paper);
+}
+.t3-dark .t3-hero,
+[data-theme="dark"] .t3-hero {
+  background:
+    radial-gradient(105% 85% at 88% 8%, var(--t3-wash-dark) 0%, transparent 60%),
+    var(--t3-paper);
+}
+
+/* The stage of that scene: the words on the left, the photos beside and
+   behind them. scene.js also pushes this back along z as you scroll. */
+.t3-split {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: var(--t3-stage-height);
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg) translateZ(0px);
+  transition: transform var(--t3-duration) var(--t3-ease);
+  will-change: transform;
+}
+
+/* Words nearest the reader, and narrow on purpose: the column ends before
+   the main photo starts, so no sentence ever runs across a picture. */
+.t3-copy-front {
+  position: relative;
+  z-index: 2;
+  width: var(--t3-copy-width);
+  transform: translateZ(var(--t3-copy-lift));
+}
+
+.t3-photo {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+  border: 4px solid var(--t3-ink);
+  border-radius: 20px;
+  background: var(--t3-paper);
+  box-shadow: var(--t3-photo-shadow);
+}
+.t3-photo > :is(img, svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.t3-dark .t3-photo,
+[data-theme="dark"] .t3-photo {
+  box-shadow: var(--t3-photo-shadow-dark);
+}
+
+/* The big photo hangs 9% off the right edge. A frame that stops politely at
+   the column edge reads as a screenshot; one that leaves the page reads as
+   a window. */
+.t3-photo-main {
+  top: 4%;
+  right: -9%;
+  width: 55%;
+  aspect-ratio: 4 / 3;
+  transform: rotateY(-9deg) rotateX(2deg);
+}
+
+/* The small photo sits a long way behind the whole scene. It is the layer
+   that makes the front photo read as a layer and not a picture. */
+.t3-photo-back {
+  bottom: 2%;
+  left: 52%;
+  width: 22%;
+  aspect-ratio: 3 / 4;
+  transform: translateZ(var(--t3-depth-back)) rotateY(-6deg);
+}
+
+/* The sticker variant for a layered hero: furthest forward, off to one side. */
+.t3-sticker--float {
+  left: 45%;
+  top: 10%;
+  transform: translateZ(var(--t3-sticker-lift)) rotate(-8deg);
+}
+
 /* ---------- cards ---------- */
+
+/* A grid of cards sharing one camera. Without perspective on the container
+   the photo inside a card still renders, but with no foreshortening: flat. */
+.t3-cards {
+  perspective: var(--t3-perspective);
+}
+
 .t3-card {
   box-shadow: var(--t3-shadow);
+  transform-style: preserve-3d;
+}
+
+/* A photo that bleeds to the card edge, and stops there.
+   --t3-card-pad must equal the card's own padding, or the photo stops meeting
+   the edge.
+
+   Deliberately NO translateZ. The perspective lives on .t3-cards, so the
+   camera sits at the centre of the whole grid; a photo 30px forward is then
+   projected away from that centre, and the first card's photo hangs 12px out
+   of its own frame. Measured, not guessed: see docs/findings.md, trap 7. The
+   card as a whole still tilts, which is where the depth comes from. */
+.t3-card-photo {
+  display: block;
+  width: calc(100% + (2 * var(--t3-card-pad)));
+  height: var(--t3-card-photo-height);
+  margin: calc(-1 * var(--t3-card-pad)) calc(-1 * var(--t3-card-pad)) 16px;
+  object-fit: cover;
+  border-bottom: 3px solid var(--t3-ink);
+  border-radius: var(--t3-card-radius) var(--t3-card-radius) 0 0;
+}
+
+/* Cards turn into place, hinged at their bottom edge. scene.js adds .t3-in
+   when the card arrives. The initial hidden state only applies once the
+   script has marked the document, so a page with no JS still shows them. */
+.t3-js .t3-turn {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .t3-turn {
+    transform: rotateX(10deg) translateY(24px) scale(0.97);
+    transform-origin: 50% 100%;
+    transition: opacity 0.5s ease, transform 0.55s var(--t3-ease);
+  }
+  .t3-turn.t3-in {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -157,10 +321,17 @@
 
 @media (prefers-reduced-motion: reduce) {
   .t3-stage,
-  .t3-card {
+  .t3-split,
+  .t3-card,
+  .t3-turn {
     transition: none;
   }
-  .t3-stage {
+  .t3-stage,
+  .t3-split {
+    transform: none !important;
+  }
+  .t3-turn {
+    opacity: 1 !important;
     transform: none !important;
   }
 }
@@ -168,7 +339,8 @@
 /* A tilt hides behind a phone thumb, and a fixed element with a transform
    ancestor stops being fixed. Motion is for pointers only. */
 @media (hover: none), (pointer: coarse) {
-  .t3-stage {
+  .t3-stage,
+  .t3-split {
     transform: none !important;
   }
 }
@@ -176,11 +348,57 @@
 /* Printing must not print an empty sticker or a half-rotated card. */
 @media print {
   .t3-pop,
-  .t3-sticker {
+  .t3-sticker,
+  .t3-photo-back {
     display: none !important;
   }
-  .t3-stage {
+  .t3-stage,
+  .t3-split {
     transform: none !important;
+  }
+  .t3-turn {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ---------- a layered hero on a phone ----------
+   The bleed and the back photo need width to read. Below the split
+   breakpoint the layers become an ordinary column, and the !important also
+   stops the script's inline transform. Keep these two breakpoints equal in
+   CSS and in scene.js's `wide` option. */
+@media (max-width: 980px) {
+  .t3-hero {
+    perspective: none;
+  }
+  .t3-split {
+    display: block;
+    min-height: 0;
+    transform: none !important;
+  }
+  .t3-copy-front {
+    width: auto;
+    transform: none;
+  }
+  .t3-photo {
+    position: relative;
+    inset: auto;
+    width: auto;
+    transform: none;
+  }
+  .t3-photo-main {
+    margin-top: 22px;
+  }
+  .t3-photo-back {
+    display: none;
+  }
+  .t3-sticker--float {
+    position: relative;
+    left: auto;
+    top: auto;
+    display: inline-block;
+    margin: 16px 0 24px;
+    transform: rotate(-5deg);
   }
 }
 
