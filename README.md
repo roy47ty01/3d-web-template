@@ -21,6 +21,7 @@ part worth copying.
 | `agents/repo-sync.md` | The agent that ports changes from a project back into this repo. |
 | `agents/README.md` | How to install that agent in another project. |
 | `CHANGELOG.md` | What changed, by version. |
+| `LICENSE` | MIT. Copy it with the files. |
 
 ## Quick start
 
@@ -149,4 +150,10 @@ See [agents/README.md](agents/README.md).
 
 ## Licence
 
-No licence file yet. Add one before sharing this outside your own projects.
+MIT — see [LICENSE](LICENSE). Use it in paid work, change it, ship it, sell what
+you build with it. The one condition is that the copyright line travels with the
+files you copy.
+
+Everything in the box is covered: the CSS, the script, the demo, and the demo's
+hand-drawn SVG figures. There are no photographs, fonts or other third-party
+assets to clear, because the template loads nothing from the network.
