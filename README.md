@@ -7,7 +7,9 @@ moves.
 Built out of a design pass on a real 1,000+ line static page, so everything here
 was shipped and measured before it was generalised. The mistakes are in
 [docs/findings.md](docs/findings.md) next to the fixes, because the traps are the
-part worth copying.
+part worth copying. Photographs get their own file —
+[docs/photographs.md](docs/photographs.md) — because a photograph brings two
+traps that depth alone does not, and both of them cost a visible bug.
 
 ## What is in the box
 
@@ -18,6 +20,7 @@ part worth copying.
 | `index.html` | Sends a bare visit to `demo/`. Nothing else. |
 | `demo/` | A working page that uses every primitive. Open it, move the mouse, scroll. |
 | `docs/findings.md` | The research and the seven traps, with code. Read this before editing the CSS. |
+| `docs/photographs.md` | Real photographs in a 3D page: the scrim, the plate, drawn icons instead of emoji, two traps, and how to measure the contrast behind a headline. |
 | `agents/repo-sync.md` | The agent that ports changes from a project back into this repo. |
 | `agents/README.md` | How to install that agent in another project. |
 | `CHANGELOG.md` | What changed, by version. |
@@ -100,8 +103,8 @@ Tokens live in `:root`: `--t3-perspective`, `--t3-lift`, `--t3-duration`,
 `--t3-card-pad`, `--t3-card-radius`, `--t3-card-photo-height`,
 `--t3-photo-shadow`, `--t3-wash`, `--t3-camera`.
 
-`--t3-card-pad` must equal the card's own padding, or the photo stops meeting
-the card edge.
+`--t3-card-pad` must equal the card's own padding, or the photo stops meeting the
+card edge.
 
 ## The six rules this template does not break
 

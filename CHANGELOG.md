@@ -6,6 +6,43 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — a new primitive or token.
 - **MAJOR** — an existing class or token changes meaning.
 
+## 0.3.0 — 19 November 2026
+
+Measured documentation of photographs in a 3D page, written while rebuilding a
+phone-first static guide that had no images at all and used emoji for its
+visual load.
+
+**Added**
+
+- `docs/photographs.md` — the photographic hero for a narrow column (photograph
+  at `translateZ(-150px)` with `scale(1.16)` to put back what the camera takes
+  away, words flat in front of it), the full-bleed plate between sections, the
+  gradient scrim, drawn SVG icons in place of emoji, and a recipe for measuring
+  the contrast behind a headline from pixels rather than from a feeling.
+- Two traps, both new and both paid for: **P1**, the `width`/`height` attributes
+  are presentational hints that beat `aspect-ratio`, so a plate meant to be 360px
+  rendered 879px; **P2**, a caption keeps the colour it was designed for and
+  loses the surface it was designed against, measured at 2.7:1.
+- The `MutationObserver` pattern for re-decorating a button whose label a shared
+  script owns, without forking that script.
+- A README row and a pointer in the opening paragraph, so the file is findable
+  without listing `docs/`.
+
+**Not ported**
+
+- **The photographs.** CC BY and CC BY-SA, and a network request. The template
+  promises neither, so the images stay with the project that licensed them.
+- **`.t3-plate` and `.t3-scrim` as classes in `css/3d.css`.** A primitive with no
+  demo is a claim, not a feature, and this demo cannot load a photograph without
+  breaking the no-network promise. The document is the evidence; the classes can
+  follow the day the demo gets a local photograph.
+- **The source page's copy, prices and section names.** Port test 3.
+
+**Changed**
+
+- Nothing in `css/3d.css`, `js/scene.js` or `demo/`. This release is the record,
+  not a new surface.
+
 ## 0.2.1 — 18 November 2026
 
 **Added**
