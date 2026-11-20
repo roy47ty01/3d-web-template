@@ -61,3 +61,12 @@ pair and survives a slow connection.
 On the source project: the chrome renders at 30px on a 1280px screen, the sheen
 is invisible at 320px because both pseudo-elements are switched off, and
 `tools/check-site.sh` still passes with no new requests in the network panel.
+
+## What replaced it
+
+Step 1 and 2 above were removed when the hero photograph was replaced by a
+cut-out object: a chain with a price tag on a transparent background, floating
+in the hero's own light. Chrome and sheen only read as a window when there is a
+pane for them to sit on, and a photographed scene was the wrong shape for this
+page anyway. What survived is the part that does the 3D work: the lit floor, the
+object's own drift and turn, and a soft pool of shadow under it.
