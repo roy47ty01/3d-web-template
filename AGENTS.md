@@ -17,11 +17,12 @@ request to another origin, it does not belong here.
 | The question | The file | Read it when |
 |---|---|---|
 | What exists, and what does it do? | `README.md` § The API | before writing any markup |
-| Why is this rule here? What broke? | `docs/findings.md` (traps 1–7) | before editing `css/3d.css` |
+| Why is this rule here? What broke? | `docs/findings.md` (traps 1–8) | before editing `css/3d.css` |
 | Photographs, scrims, drawn icons | `docs/photographs.md` (traps P1–P2) | before putting an image in a scene |
 | May I port this from a project? | `agents/repo-sync.md` | before copying anything in |
 | What changed, and what version is next? | `CHANGELOG.md` | before committing |
-| What did a piece of research actually say? | `docs/3d-web-templates.md`, `docs/floating-window-pass.md` | when writing a new one |
+| What did a piece of research actually say? | `docs/3d-web-templates.md`, `docs/floating-window-pass.md`, `docs/reel-pass-november-2026.md` | when writing a new one |
+| Has this been researched before? | `docs/sources.md` | before adding a link, and after reading one |
 
 `README.md` is normative: it says what the vocabulary is. `docs/` is evidence: it
 says what was measured and what it cost. Neither is a stylesheet, and neither
@@ -32,13 +33,13 @@ fix the doc in the same commit.
 
 - **Using the template in a page:** `README.md` § Quick start, then § The API.
   That is all you need.
-- **Editing `css/3d.css` or `js/scene.js`:** the API table, then all nine traps
+- **Editing `css/3d.css` or `js/scene.js`:** the API table, then all ten traps
   below, then `demo/index.html` to see the primitive in use.
 - **Adding a primitive:** `agents/repo-sync.md` § Procedure. A primitive with no
   demo is a claim, not a feature.
 - **Adding research:** § Writing here, below.
 
-## The nine traps
+## The ten traps
 
 Two files carry them. Memorise the one-line rule; open the file for the code.
 The rule is not up for debate — a change that re-introduces one is rejected.
@@ -52,6 +53,7 @@ The rule is not up for debate — a change that re-introduces one is rejected.
 | T5 | Reading text does not move | glyph stems blur at the extremes; readers with visual stress notice first |
 | T6 | The scroll recede is `clamp(top * 0.45, -240, 0)` — never positive | the scene zooms at the reader instead of receding; invisible at rest, because at rest it is zero |
 | T7 | No `translateZ` on a photo inside a shared-camera grid | the photo projects sideways out of its own card: 12px overhang at 1440px, middle card looks fine |
+| T8 | A lifted text column needs `--t3-copy-inset`, or no lift at all | the camera projects the column away from its origin: at 1024px the hero lost the first 33px of every line and `scrollWidth` still matched `clientWidth`, because the hero clips |
 | P1 | `height: auto` on every image whose height comes from `aspect-ratio` | the `width`/`height` attributes are presentational hints and win: a 360px plate rendered 879px |
 | P2 | A colour is only correct against a surface | moving an element between surfaces is a colour change, declaration or not: caption measured 2.7:1 |
 
@@ -69,6 +71,11 @@ The rule is not up for debate — a change that re-introduces one is rejected.
 - **Tilt ceilings:** 5°/4° for a scene, 4°/3° for the hero, 3°/2° over a
   photograph, 3°/4° for a card. They are ceilings, not suggestions; each was set
   by the text nearest the layer.
+- **`--t3-copy-inset`** is arithmetic, not taste: `lift / (perspective - lift) x
+  origin`, divided by the projection factor, as a percentage of the scene. Change
+  `--t3-copy-lift`, `--t3-perspective`, `--t3-camera` or `--t3-copy-width` and it
+  stops cancelling. Measure the `h1`'s left edge against the scene's, do not
+  assume it.
 
 ## Never
 
@@ -94,6 +101,8 @@ On the demo, measure — do not eyeball:
 - [ ] `document.documentElement.scrollWidth === clientWidth` at 320, 390, 768 and 1280.
 - [ ] `getComputedStyle(stage).transform` at four scroll offsets: `translateZ` is
       `0` at the top and negative after. Positive is T6.
+- [ ] The `h1`'s left edge is not left of the scene's left edge. Negative at
+      981–1100px is T8.
 - [ ] With `prefers-reduced-motion: reduce` emulated, the stage never transforms.
 - [ ] Both themes: no dark hole in a light illustration, no brown halo smudge.
 - [ ] Text contrast at least 4.5:1 in both themes, measured, not felt.
@@ -124,7 +133,7 @@ The prose in this repo is part of the product. It is written to one shape:
    correct and expected. `docs/findings.md` § 1 does this about the reel whose
    frames were unreadable; that honesty is the house style, not a weakness.
 6. **Date and link every source**, with the date it was read. No undated claims
-   about a living page.
+   about a living page. `docs/sources.md` is the register that holds them.
 7. **No hedging, no selling.** No "revolutionary", no "seamless", no exclamation
    marks. Dry is the register.
 
