@@ -50,6 +50,17 @@
     0 44px 74px -42px rgba(0, 0, 0, 0.95),
     0 0 70px -22px rgba(242, 177, 52, 0.3);
 
+  /* The room: a row of objects on a rail, focused one at a time. Every step
+     away from the selected object shrinks it, dims it and takes the artwork
+     out of focus. Distance is counted in items, capped at 3 in both this file
+     and scene.js. The colours are literal, like the sticker's: a room is a
+     place, not a surface, so it stays dark on a light page. */
+  --t3-room-shrink: 0.06;
+  --t3-room-item-w: 132px;
+  --t3-room-pad-top: clamp(40px, 6vw, 72px);
+  --t3-room-ink: #eef3f8;
+  --t3-room-accent: #f2b134;
+
   /* The wash behind the hero, and where the camera sits. */
   --t3-wash: rgba(251, 231, 194, 0.95);
   --t3-wash-dark: rgba(59, 43, 22, 0.9);
@@ -331,6 +342,186 @@
   }
 }
 
+/* ---------- the room ----------
+   A row of objects on a rail, focused one at a time. No WebGL, no library, no
+   canvas: a radial wash, a 1px rail, and a scale.
+
+   The depth here is depth of field, not a camera, and that is deliberate.
+   This started as the obvious version — .t3-room-space with perspective, the
+   row with preserve-3d, every object translated back in z. It looked right
+   and it was unclickable: elementFromPoint at the visual centre of four of
+   the five objects returned the row itself, not the object, so only the
+   selected item could ever be chosen. Measured in Chrome, with the transform
+   reduced to matrix() and with perspective removed, both still broken;
+   transform-style: flat on the row fixed all five and removed the translateZ
+   with it. Two honest options existed — a camera the reader cannot click, or
+   focus they can. So: no preserve-3d on this row, ever, and the depth comes
+   from scale, tone and blur, which are 2D properties and hit-test exactly
+   where they paint.
+
+   Do not add translateZ back to this row without re-running that probe. */
+.t3-room {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  color: var(--t3-room-ink);
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 92px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 92px),
+    radial-gradient(120% 88% at 50% 4%, #2b3a4c 0%, #18222d 52%, #0b1117 100%);
+}
+
+.t3-room-space {
+  position: relative;
+  padding: var(--t3-room-pad-top) 0 clamp(32px, 5vw, 52px);
+}
+
+/* The rail. A flat 1px line would stop dead at the wall; the fade at both
+   ends is what makes the room read as continuing past the frame. */
+.t3-room-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Exactly the row's top edge: the objects hang off the rail. */
+  top: var(--t3-room-pad-top);
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 10%,
+    rgba(255, 255, 255, 0.3) 90%,
+    transparent 100%
+  );
+}
+
+.t3-room-row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(8px, 2.4vw, 34px);
+  margin: 0;
+  padding: 0 28px;
+  list-style: none;
+}
+
+/* One object. --t3-room-dist is written by scene.js; 0 is the selected item and
+   its neighbours are 1, 2, 3 or more. min() caps it, so the fifth object away
+   is not a speck in the dark.
+
+   It hangs from the rail: the origin is the top centre, so a neighbour shrinks
+   upwards and stays on the line instead of drifting off it. */
+.t3-room-item {
+  --t3-room-dist: 0;
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--t3-room-item-w);
+  transform-origin: 50% 0;
+  transform: scale(calc(1 - min(var(--t3-room-dist), 3) * var(--t3-room-shrink)));
+  opacity: calc(1 - min(var(--t3-room-dist), 3) * 0.15);
+  transition:
+    transform var(--t3-duration) var(--t3-ease),
+    opacity var(--t3-duration) var(--t3-ease);
+}
+
+.t3-room-hit {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+.t3-room-hit:focus-visible {
+  outline: 2px solid var(--t3-room-accent);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+
+/* Only the artwork goes out of focus. Blur on the whole item would smear the
+   object's own name into an unreadable line, and the name is the reason the
+   object is for sale. */
+.t3-room-object {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  filter: blur(calc(min(var(--t3-room-dist), 3) * 0.5px));
+  transition: filter var(--t3-duration) var(--t3-ease);
+}
+
+/* Four corner ticks, drawn as eight gradients: a short line horizontally and
+   vertically at each corner. A full box reads as a frame and shrinks the
+   room; ticks read as a targeting reticle and sit outside the object. */
+.t3-room-hit::before {
+  content: "";
+  position: absolute;
+  /* Around the object only: the tag above it and the name below are not part
+     of what is being selected. The object is --t3-room-item-w wide at 3:4. */
+  inset: -10px -10px auto;
+  height: calc(var(--t3-room-item-w) * 4 / 3 + 20px);
+  opacity: 0;
+  transition: opacity var(--t3-duration) var(--t3-ease);
+  background:
+    linear-gradient(var(--t3-room-accent), var(--t3-room-accent)) left top / 14px 1.5px no-repeat,
+    linear-gradient(var(--t3-room-accent), var(--t3-room-accent)) left top / 1.5px 14px no-repeat,
+    linear-gradient(var(--t3-room-accent), var(--t3-room-accent)) right top / 14px 1.5px no-repeat,
+    linear-gradient(var(--t3-room-accent), var(--t3-room-accent)) right top / 1.5px 14px no-repeat,
+    linear-gradient(var(--t3-room-accent), var(--t3-room-accent)) left bottom / 14px 1.5px no-repeat,
+    linear-gradient(var(--t3-room-accent), var(--t3-room-accent)) left bottom / 1.5px 14px no-repeat,
+    linear-gradient(var(--t3-room-accent), var(--t3-room-accent)) right bottom / 14px 1.5px no-repeat,
+    linear-gradient(var(--t3-room-accent), var(--t3-room-accent)) right bottom / 1.5px 14px no-repeat;
+}
+.t3-room-item.is-t3-on .t3-room-hit::before,
+.t3-room:not(.t3-room-live) .t3-room-item:first-child .t3-room-hit::before {
+  opacity: 1;
+}
+
+/* The tag hangs above the object on a 12px stem, the way a price tag hangs
+   off a rail. Small and close to the rail, or it reads as a heading. */
+.t3-room-label {
+  position: absolute;
+  left: 50%;
+  top: -26px;
+  padding: 2px 7px;
+  border: 1px solid rgba(242, 177, 52, 0.5);
+  border-radius: 3px;
+  background: rgba(11, 17, 23, 0.85);
+  color: var(--t3-room-accent);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.t3-room-label::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: 12px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.t3-room-name {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  opacity: 0.72;
+}
+
 /* ---------- the guards ----------
    None of these are optional. They are why this is a template and not a demo. */
 
@@ -338,7 +529,10 @@
   .t3-stage,
   .t3-split,
   .t3-card,
-  .t3-turn {
+  .t3-turn,
+  .t3-room-item,
+  .t3-room-object,
+  .t3-room-hit::before {
     transition: none;
   }
   .t3-stage,
@@ -374,6 +568,21 @@
   .t3-turn {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .t3-room-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .t3-room-object {
+    filter: none !important;
+  }
+  .t3-room {
+    background: none !important;
+    color: var(--t3-ink) !important;
+  }
+  .t3-room-object {
+    background: none;
+    border-color: currentColor;
   }
 }
 
@@ -415,6 +624,55 @@
     display: inline-block;
     margin: 16px 0 24px;
     transform: rotate(-5deg);
+  }
+}
+
+/* ---------- a room on a phone ----------
+   Depth needs width to read, and a rail needs a thumb's reach. Below the same
+   980px where the hero stops being a column, the room becomes a horizontal
+   strip with scroll snapping: no camera, no blur, every object at full size.
+   The strip scrolls itself, so it never widens the page. */
+@media (max-width: 980px) {
+  .t3-room-space {
+    padding: 36px 0 28px;
+  }
+  .t3-room-rail {
+    display: none;
+  }
+  .t3-room-row {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 0 20px 12px;
+    transform: none !important;
+    -webkit-overflow-scrolling: touch;
+    /* The next object showing at the edge is the affordance. A grey platform
+       scrollbar drawn inside a dark room is not. */
+    scrollbar-width: none;
+  }
+  .t3-room-row::-webkit-scrollbar {
+    display: none;
+  }
+  .t3-room-item {
+    transform: none !important;
+    opacity: 1;
+    scroll-snap-align: center;
+  }
+  .t3-room-object {
+    filter: none;
+  }
+  /* Two and a bit objects on a phone: enough of the next one to promise more. */
+  .t3-room {
+    --t3-room-item-w: 108px;
+  }
+  .t3-room-label {
+    position: static;
+    display: inline-block;
+    margin-bottom: 8px;
+    transform: none;
+  }
+  .t3-room-label::before {
+    display: none;
   }
 }
 

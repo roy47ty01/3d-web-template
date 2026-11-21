@@ -7,6 +7,7 @@
      T3.hero(sceneEl, stageEl, { ... })         -> { destroy() }
      T3.cards(rootEl, { selector })
      T3.reveal(rootEl, { selector, threshold })
+     T3.room(roomEl, { itemSelector })           -> { destroy() }
      T3.init(rootEl)                            auto-wires the attributes
 
    Markup:
@@ -19,6 +20,9 @@
 
    `data-t3-hero` on the scene adds the scroll recede to the same tilt.
    `data-t3-card` tilts a card. `data-t3-turn` reveals it on arrival.
+   `data-t3-room` turns a row of `data-t3-room-item` children into a rail the
+   reader can select from. It is the one primitive here with no camera, on
+   purpose: see the note above `.t3-room` in css/3d.css.
 
    Nothing here runs on a touch screen, and nothing runs when the reader
    has asked for reduced motion. That is not politeness: a page that tilts
@@ -246,6 +250,106 @@
     });
   }
 
+  /* The room: a row of objects on a rail, focused one at a time. The selected
+     one sits at full size and every other is one --t3-room-shrink step smaller
+     and dimmer per item away.
+
+     The cap (3) is written twice on purpose: here, and as min(…, 3) in the
+     CSS. Setting a distance the stylesheet does not expect moves an object
+     without dimming it, which reads as a bug, not depth.
+
+     Without this function the row is an ordinary row of buttons at one depth:
+     every object visible, every label readable, no selection. That is the
+     fallback, and it works. */
+  function room(container, options) {
+    var opts = options || {};
+    var items = Array.prototype.slice.call(
+      container.querySelectorAll(opts.itemSelector || "[data-t3-room-item]")
+    );
+    if (!items.length) return { destroy: function () {} };
+
+    var cap = 3;
+    /* Start in the middle: the room is symmetric, and a selection at one end
+       shows a one-sided effect that reads as a broken carousel. */
+    var live = Math.floor((items.length - 1) / 2);
+
+    function paint() {
+      for (var i = 0; i < items.length; i++) {
+        var dist = Math.min(cap, Math.abs(i - live));
+        items[i].style.setProperty("--t3-room-dist", String(dist));
+        if (i === live) {
+          items[i].classList.add("is-t3-on");
+          items[i].setAttribute("aria-current", "true");
+        } else {
+          items[i].classList.remove("is-t3-on");
+          items[i].removeAttribute("aria-current");
+        }
+      }
+      container.classList.add("t3-room-live");
+    }
+
+    function itemFor(node) {
+      while (node && node !== container) {
+        if (node.hasAttribute && node.hasAttribute("data-t3-room-item")) return node;
+        node = node.parentNode;
+      }
+      return null;
+    }
+
+    function select(index, moveFocus) {
+      live = (index + items.length) % items.length;
+      paint();
+      if (!moveFocus) return;
+      var button = items[live].querySelector("button");
+      if (button) button.focus();
+    }
+
+    function onClick(event) {
+      var item = itemFor(event.target);
+      if (!item) return;
+      var index = items.indexOf(item);
+      if (index >= 0) select(index, false);
+    }
+
+    function onKey(event) {
+      if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+        select(live + (event.key === "ArrowRight" ? 1 : -1), true);
+        event.preventDefault();
+      } else if (event.key === "Home" || event.key === "End") {
+        select(event.key === "Home" ? 0 : items.length - 1, true);
+        event.preventDefault();
+      }
+    }
+
+    /* Tabbing into an object selects it, so the visual state and the focused
+       element never disagree. */
+    function onFocus(event) {
+      var item = itemFor(event.target);
+      if (!item) return;
+      var index = items.indexOf(item);
+      if (index >= 0 && index !== live) select(index, false);
+    }
+
+    container.addEventListener("click", onClick);
+    container.addEventListener("keydown", onKey);
+    container.addEventListener("focusin", onFocus);
+    paint();
+
+    return {
+      destroy: function () {
+        container.removeEventListener("click", onClick);
+        container.removeEventListener("keydown", onKey);
+        container.removeEventListener("focusin", onFocus);
+        container.classList.remove("t3-room-live");
+        for (var i = 0; i < items.length; i++) {
+          items[i].style.removeProperty("--t3-room-dist");
+          items[i].classList.remove("is-t3-on");
+          items[i].removeAttribute("aria-current");
+        }
+      }
+    };
+  }
+
   function init(root) {
     var scope = root || document;
     var scenes = scope.querySelectorAll("[data-t3-tilt]");
@@ -264,13 +368,27 @@
 
     cards(scope);
     reveal(scope);
+
+    Array.prototype.forEach.call(scope.querySelectorAll("[data-t3-room]"), function (container) {
+      if (container.getAttribute("data-t3-ready") === "1") return;
+      container.setAttribute("data-t3-ready", "1");
+      room(container);
+    });
   }
 
   function start() {
     init(document);
   }
 
-  window.T3 = { tilt: tilt, hero: hero, cards: cards, reveal: reveal, init: init, allowed: allowed };
+  window.T3 = {
+    tilt: tilt,
+    hero: hero,
+    cards: cards,
+    reveal: reveal,
+    room: room,
+    init: init,
+    allowed: allowed
+  };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start);
