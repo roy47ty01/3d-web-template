@@ -6,6 +6,55 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — a new primitive or token.
 - **MAJOR** — an existing class or token changes meaning.
 
+## 0.7.0 — 21 November 2026
+
+The reel's transition, built as the third primitive from that pass — and a
+correction to what this repo had said the blur was.
+
+**Added**
+
+- **The wipe**, in `css/3d.css`: `.t3-wipe`, `-stage`, `-screen`, `-flash`.
+  One screen smearing out in a horizontal blur while the next resolves
+  underneath it, scrubbed by scroll position. The streak is one `filter` and one
+  `transform`, in that order: `filter` is applied before `transform`, so a
+  screen scaled wider than it is tall renders its gaussian sideways. Tokens:
+  `--t3-wipe-blur`, plus the theme-aware `--t3-wipe-field` and
+  `--t3-wipe-bloom`, which are scoped to the section because the screens keep
+  literal colours.
+- **`T3.wipe(el, { range })`** in `js/scene.js`, wired through `data-t3-wipe`.
+  It writes `--t3-wipe-p` as a number from 0 to 1, so the whole primitive can be
+  held at any point and measured there. It is a scrub, not a playback: scrolling
+  back runs it in reverse.
+- `demo/index.html`: a band between the room and the surface, with two drawn
+  screens whose copy is invented.
+- `docs/reel-pass-november-2026.md` § 1: a subsection on the smear — what the
+  frames settle, and the two numbers that had to be right for it to read as a
+  transition rather than a dissolve.
+
+**Changed**
+
+- **The wipe refuses instead of calming.** Every other guard here leaves a
+  stiller version of the same thing; half a wipe is a blurred page. With no
+  script, or with `prefers-reduced-motion`, `.t3-wipe-live` is never added and
+  the two screens stack as ordinary panels — both readable, both printed.
+
+**Found**
+
+- **The blur is a cut between cards, not a fifth technique.** Eleven frames
+  across 4.0–5.35s show the label changing from "Transition as Scroll" to
+  "Live 3D hero" through the smear, so it is the montage moving from one card to
+  the next. `reel-pass-november-2026.md` had called it an untitled fifth card;
+  that row is now two rows, and the card it lands on is named.
+- **A recording shows an effect, not an implementation.** Nothing in the reel
+  says what drove the transition, so the template picks scroll and says so. It
+  also states the limit: a stretched gaussian is not a motion blur, which would
+  need several frames averaged, and CSS cannot do that without duplicating the
+  DOM.
+- **The demo's own layout hid half the effect.** With the band last but one, the
+  page ran out of scroll at 80% of the wipe's travel and the incoming screen
+  never resolved — a transition that cannot finish reads as a bug. It moved up
+  one band, and the travel was verified to reach 1.0.
+
 ## 0.6.0 — 21 November 2026
 
 The reel's fourth interaction, built; and the first transcript taken of a
