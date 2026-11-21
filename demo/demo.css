@@ -142,6 +142,10 @@ h3 { font-size: 1.1rem; margin: 0 0 8px; }
 /* The panel paints itself; the margin is the only page-level decision here. */
 .t3-surface-panel { margin-top: 28px; }
 
+/* ---------- the wipe ---------- */
+/* Same again: the stage paints itself, the margin is the page's only say. */
+.t3-wipe { margin-top: 28px; }
+
 @media (max-width: 980px) {
   .t3-copy-front { padding-left: 0; } /* stacked: nothing is projected, so no pad */
   .t3-photo-main { max-width: 420px; }
