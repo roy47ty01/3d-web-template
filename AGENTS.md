@@ -21,7 +21,7 @@ request to another origin, it does not belong here.
 | Photographs, scrims, drawn icons | `docs/photographs.md` (traps P1–P2) | before putting an image in a scene |
 | May I port this from a project? | `agents/repo-sync.md` | before copying anything in |
 | What changed, and what version is next? | `CHANGELOG.md` | before committing |
-| What did a piece of research actually say? | `docs/3d-web-templates.md`, `docs/floating-window-pass.md`, `docs/reel-pass-november-2026.md` | when writing a new one |
+| What did a piece of research actually say? | `docs/3d-web-templates.md`, `docs/floating-window-pass.md`, `docs/reel-pass-november-2026.md`, `docs/transcripts-november-2026.md` | when writing a new one |
 | Has this been researched before? | `docs/sources.md` | before adding a link, and after reading one |
 
 `README.md` is normative: it says what the vocabulary is. `docs/` is evidence: it
@@ -80,6 +80,15 @@ The rule is not up for debate — a change that re-introduces one is rejected.
 - **The room's distance cap** is `min(var(--t3-room-dist), 3)` in `css/3d.css`
   and `cap = 3` in `scene.js`. An item set further back than the stylesheet
   expects moves without dimming, which reads as a bug rather than depth.
+- **The surface's sheet inset is its crop.** `.t3-surface-sheet`'s bottom inset
+  is what cuts the figure off, so raising it takes the subject's shoulders with
+  it. The figure sits at `bottom: 0` inside the sheet on purpose: move it up and
+  the cut becomes a gap, and a gap is the rectangle the primitive exists to
+  avoid.
+- **The surface's colours are literal**, like the room's and the sticker's: a
+  slab shot against a landscape does not become a dark slab. The ink on it is
+  therefore fixed and measured once — the pill is 7.34:1 on the accent, which is
+  the number to keep if the accent changes.
 - **`--t3-copy-inset`** is arithmetic, not taste: `lift / (perspective - lift) x
   origin`, divided by the projection factor, as a percentage of the scene. Change
   `--t3-copy-lift`, `--t3-perspective`, `--t3-camera` or `--t3-copy-width` and it
@@ -118,6 +127,9 @@ On the demo, measure — do not eyeball:
 - [ ] Print preview: nothing invisible, no sticker, no transform.
 - [ ] The room: clicking an object moves the badge and the bracket to that
       object and to no other. A 3D row fails this while looking perfect.
+- [ ] The surface: the figure is cut by the sheet's bottom edge with no frame
+      around it, the press is 1px, and the pill's ink measures at least 4.5:1 on
+      the accent. The source's own chip measures 2.21:1 and is the reason.
 - [ ] Console clean.
 
 A rendering that was not looked at is not verified. Write "not viewed" rather

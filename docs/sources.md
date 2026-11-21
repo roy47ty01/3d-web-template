@@ -4,9 +4,10 @@ Every external post this repo's research rests on, with the date it was read and
 what came of it. A link that is not here is a claim nobody can re-check.
 
 **Status key.** **Viewed** — the video was downloaded and sampled frame by frame,
-so the technique was seen. **Read, not viewed** — caption, comments and page
-metadata only, so the technique is inferred from the words. **Unreadable** — the
-platform returned nothing useful.
+so the technique was seen. **Heard** — an audio track was transcribed, so a
+spoken claim is quoted from the sound and not from the caption. **Read, not
+viewed** — caption, comments and page metadata only, so the technique is
+inferred from the words. **Unreadable** — the platform returned nothing useful.
 
 Photographs, videos and carousels rot. Read the status before you trust the
 contents of a row.
@@ -21,11 +22,18 @@ which is why their technique is still inferred from words and comments.
 | Link | Who | Posted | What it is | Status | Went to |
 |---|---|---|---|---|---|
 | <https://www.instagram.com/p/DfrnQFPCfCx/> | @digitalmarketingtrending (Tarun) | 13 Nov 2026 | A prompt-pack funnel: "1000s AI codes", ten categories of AI image prompts, comment-to-receive. | Read, not viewed | Not used. Not 3D website material at all — see `reel-pass-november-2026.md` § 3. |
-| <https://www.instagram.com/reel/Df56UBEBL5Q/> | @marcelodesignxh (Marcelo Cedeno) | 18 Nov 2026 | A 9.83s montage of four interactions: Transition as Scroll, an untitled motion-blur wipe, Spatial Browsing, Touchable Surface. | Viewed | `reel-pass-november-2026.md` § 1 — the only technique in the set the template does not already have, now shipped as `.t3-room`. Its comment section is the most useful evidence in the batch. |
-| <https://www.instagram.com/reel/Ddh2J6Zppgb/> | @fifbuilds (Fiona) | 20 Sep 2026 | 54s. "The most insane 3D, scroll, text & UI animation effects you've seen are free on GitHub." Names four repos in caption and on screen. | Viewed | `reel-pass-november-2026.md` § 2, and the library facts in § 2. |
+| <https://www.instagram.com/reel/Df56UBEBL5Q/> | @marcelodesignxh (Marcelo Cedeno) | 18 Nov 2026 | A 9.83s montage of four interactions: Transition as Scroll, an untitled motion-blur wipe, Spatial Browsing, Touchable Surface. | Viewed | `reel-pass-november-2026.md` § 1 — two techniques the template did not already have, now shipped as `.t3-room` and `.t3-surface-*`. Its comment section is the most useful evidence in the batch. |
+| <https://www.instagram.com/reel/Ddh2J6Zppgb/> | @fifbuilds (Fiona) | 20 Sep 2026 | 54s. "The most insane 3D, scroll, text & UI animation effects you've seen are free on GitHub." Names four repos in caption, on screen and in the voice-over. | Viewed, heard | `reel-pass-november-2026.md` § 2, the library facts in § 2, and the transcript in `transcripts-november-2026.md`. |
 | <https://www.instagram.com/reel/Df8EvNKT762/> | @tmvdesignstudio | 20 Nov 2026 | 38s, a course funnel: "the moment I switched from basic template looking websites…", comment "LAB" for access. | Viewed | `reel-pass-november-2026.md` § 3. Its premise is rejected; its diagnosis is already `findings.md` § 2. |
-| <https://www.instagram.com/reel/Dc1ENsHzNSj/> | @kevin.snippet | 3 Sep 2026 | 41s. "3 Frontend Libraries to Build Premium Websites – Day 1". Four demo sites on a monitor, captioned "buttery smooth scrolling", "Scroll Animation", "make your site". | Viewed | Nothing ported. The frames settle it: the library names never appear on screen, they are spoken, so a silent read cannot recover them. See § 3. |
+| <https://www.instagram.com/reel/Dc1ENsHzNSj/> | @kevin.snippet | 3 Sep 2026 | 41s. "3 Frontend Libraries to Build Premium Websites – Day 1". Four demo sites on a monitor, captioned "buttery smooth scrolling", "Scroll Animation", "make your site". | Viewed | Nothing ported. The frames settle it: the library names never appear on screen, and the public download has no audio track at all, so they are not recoverable here. See § 3 and `transcripts-november-2026.md`. |
 | <https://www.instagram.com/p/DfU1oermXvT/> | @himanshubuilds (Himanshu Hingorani) | 4 Nov 2026 | A carousel promoting scrolltide.co: pick a site, copy its prompt, paste into an AI tool, rebrand. | Read, not viewed | Already written up in `floating-window-pass.md` and `3d-web-templates.md`. |
+
+**Audio.** Three of the four reels arrive from a logged-out download as
+video-only: `yt-dlp -F` lists no audio representation at all and the file has a
+single stream. Only the 54-second library reel carries a track, and it was
+transcribed — `transcripts-november-2026.md`. Nothing spoken in the other three
+is quoted anywhere in this repo, because nothing spoken in them can be heard
+here.
 
 ## Links carried inside those posts
 

@@ -20,16 +20,17 @@ ends with the verify-then-commit loop.
 | Path | What it is |
 |---|---|
 | `AGENTS.md` | The map for an agent: where each rule lives, the ten traps in one table, the couplings, and the verification recipe. |
-| `css/3d.css` | The primitives: scene, stage, pop, sticker, halo, the layered hero, photos in cards, the room, CSS-numbered sections, and the guards. |
-| `js/scene.js` | 397 lines. Pointer tilt, scroll recede, and the room's selection, gated on a real pointer and on `prefers-reduced-motion`. |
+| `css/3d.css` | The primitives: scene, stage, pop, sticker, halo, the layered hero, photos in cards, the room, the touchable surface, CSS-numbered sections, and the guards. |
+| `js/scene.js` | 398 lines. Pointer tilt, scroll recede, and the room's selection, gated on a real pointer and on `prefers-reduced-motion`. |
 | `index.html` | Sends a bare visit to `demo/`. Nothing else. |
 | `demo/` | A working page that uses every primitive. Open it, move the mouse, scroll. |
-| `docs/findings.md` | The research and the eight traps, with code. Read this before editing the CSS. |
+| `docs/findings.md` | The research and the eight traps, with code. Read this before editing the CSS. Two more traps, P1 and P2, live in `docs/photographs.md`; `AGENTS.md` lists all ten on one page. |
 | `docs/photographs.md` | Real photographs in a 3D page: the scrim, the plate, drawn icons instead of emoji, two traps, and how to measure the contrast behind a headline. |
 | `agents/repo-sync.md` | The agent that ports changes from a project back into this repo. |
 | `agents/README.md` | How to install that agent in another project. |
 | `docs/sources.md` | The register: every post this research rests on, when it was read, what it was, and whether the frames were ever seen. |
-| `docs/reel-pass-november-2026.md` | Six links in one day: one technique the template does not have, four libraries that are dependencies, four funnels. |
+| `docs/reel-pass-november-2026.md` | Six links in one day: two techniques the template does not have, four libraries that are dependencies, four funnels. |
+| `docs/transcripts-november-2026.md` | What the reels said out loud: the one transcript that could be made, the three reels that carry no audio, and the claim that had to be corrected. |
 | `CHANGELOG.md` | What changed, by version. |
 | `LICENSE` | MIT. Copy it with the files. |
 
@@ -111,6 +112,13 @@ config, no init call, no framework.
 | `data-t3-card` | a card | Pointer tilt for one card. |
 | `data-t3-turn` | a card | Adds it to the reveal observer. |
 | `data-t3-room` / `data-t3-room-item` | room / object | What the room in `scene.js` binds to: click, Tab, arrow keys, Home and End. Without the script the room is an ordinary row of buttons — every object visible, every label readable. |
+| `.t3-surface-panel` | the section | The slab: rounded, clipped, a ground from gradients alone. Literal colours, like the room's — a slab shot against a landscape does not become a dark slab. |
+| `.t3-surface-ground` | inside the panel | Optional artwork for the ground: a background image or an SVG, `object-fit: cover`. |
+| `.t3-surface-sheet` | inside the panel | The inset paper. Carries the header, and crops the figure at its bottom edge. |
+| `.t3-surface-bar` / `-brand` / `-mark` / `-actions` | inside the sheet | The header row: stacked brand at the left, mono mark centred, chips at the right. |
+| `.t3-surface-pill` / `-dot` / `-menu` | the chips | A real link and a real button. Ink on the accent, not white on it: the source's pairing measured 2.21:1, this one 7.34:1. |
+| `.t3-surface-figure` | the cut-out | The subject, at `bottom: 0`. No frame and no paper behind it — the drop shadow is the silhouette's. |
+| `.t3-surface-note` | the lower left | A note card that straddles the sheet's corner, so it carries its own paper and ink. Hidden below 640px. |
 
 Tokens live in `:root`: `--t3-perspective`, `--t3-lift`, `--t3-duration`,
 `--t3-ease`, `--t3-shadow`, `--t3-shadow-lift`, `--t3-halo`, `--t3-copy-lift`,
@@ -118,7 +126,9 @@ Tokens live in `:root`: `--t3-perspective`, `--t3-lift`, `--t3-duration`,
 `--t3-depth-back`, `--t3-sticker-lift`, `--t3-stage-height`, `--t3-copy-width`,
 `--t3-card-pad`, `--t3-card-radius`, `--t3-card-photo-height`,
 `--t3-photo-shadow`, `--t3-wash`, `--t3-camera`, `--t3-room-shrink`,
-`--t3-room-item-w`, `--t3-room-pad-top`, `--t3-room-ink`, `--t3-room-accent`.
+`--t3-room-item-w`, `--t3-room-pad-top`, `--t3-room-ink`, `--t3-room-accent`,
+`--t3-surface-radius`, `--t3-surface-sheet`, `--t3-surface-ink`,
+`--t3-surface-accent`.
 
 `--t3-card-pad` must equal the card's own padding, or the photo stops meeting the
 card edge.
@@ -155,6 +165,7 @@ decision for the project that wants it.
 | `pointermove` + `matchMedia` | Everywhere | No scene, no error |
 | CSS counters | Everywhere | Numbers appear in every browser |
 | `backdrop-filter` | Modern browsers | Opaque bar, guarded by `@supports` |
+| `aspect-ratio` | Everywhere since 2021 | `.t3-surface-panel` also has a `min-height` floor |
 | `color-mix()` (demo only) | Modern browsers | Falls back to the solid paper colour |
 
 No polyfills. Nothing here fails loudly on an old browser; it just goes flat.
