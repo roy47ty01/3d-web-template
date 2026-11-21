@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3D Web Template — working demo</title>
-<meta name="description" content="A dependency-free demo of the 3D primitives in this template: a layered hero that recedes on scroll, a sticker in front of the scene, photos set into cards, and CSS-numbered sections.">
+<meta name="description" content="A dependency-free demo of the 3D primitives in this template: a layered hero that recedes on scroll, a sticker in front of the scene, photos set into cards, a room you browse, and CSS-numbered sections.">
 <link rel="stylesheet" href="../css/3d.css">
 <link rel="stylesheet" href="demo.css">
 </head>
@@ -121,6 +121,82 @@
           <p>Anything at <code>translateZ</code> is a second depth. One or two per scene is enough. Ten is a fairground, and the reader stops reading.</p>
         </article>
       </div>
+    </div>
+  </section>
+
+  <section class="band" id="room">
+    <div class="wrap">
+      <h2>A room you browse</h2>
+      <p class="lede">Five objects hang on a rail. One is at full size; every other is a step smaller, a step dimmer and a step further out of focus, so the row is focused rather than looked at. Click an object, tab to it, or use the arrow keys.</p>
+      <p class="lede note">No WebGL and no 3D transform: five boxes, one scale, and a blur on the artwork. A camera version was built first and could not be clicked — <a href="../docs/reel-pass-november-2026.md">the note</a> says what broke.</p>
+
+      <div class="t3-room" data-t3-room>
+        <div class="t3-room-space">
+          <div class="t3-room-rail" aria-hidden="true"></div>
+          <ul class="t3-room-row" aria-label="Objects on the rail">
+            <li class="t3-room-item" data-t3-room-item>
+              <button class="t3-room-hit" type="button">
+                <span class="t3-room-label">SP-01</span>
+                <svg class="t3-room-object" viewBox="0 0 120 160" aria-hidden="true">
+                  <path d="M38 30h44l16 22-12 9 8 62H26l8-62-12-9z" fill="#9aa7b6"/>
+                  <path d="M46 30h28l-6 12H52z" fill="#7e8b9a"/>
+                  <g stroke="#5d6a78" stroke-width="1.5" opacity="0.7">
+                    <path d="M30 54h60M32 68h56M34 82h52M36 96h48M38 110h44"/>
+                  </g>
+                </svg>
+                <span class="t3-room-name">Quilted coat</span>
+              </button>
+            </li>
+            <li class="t3-room-item" data-t3-room-item>
+              <button class="t3-room-hit" type="button">
+                <span class="t3-room-label">SP-02</span>
+                <svg class="t3-room-object" viewBox="0 0 120 160" aria-hidden="true">
+                  <path d="M40 32h40l20 26-14 12-6-8v66H40V62l-6 8-14-12z" fill="#c9d2dc"/>
+                  <g stroke="#a9b4c2" stroke-width="1.2" opacity="0.8">
+                    <path d="M52 46v80M60 46v80M68 46v80"/>
+                  </g>
+                </svg>
+                <span class="t3-room-name">Ribbed knit</span>
+              </button>
+            </li>
+            <li class="t3-room-item" data-t3-room-item>
+              <button class="t3-room-hit" type="button">
+                <span class="t3-room-label">SP-03</span>
+                <svg class="t3-room-object" viewBox="0 0 120 160" aria-hidden="true">
+                  <rect x="28" y="36" width="64" height="96" rx="6" fill="#4a5765"/>
+                  <path d="M28 54h64" stroke="#333d49" stroke-width="2"/>
+                  <path d="M60 54v36" stroke="#333d49" stroke-width="2"/>
+                  <rect x="36" y="94" width="20" height="16" rx="2" fill="#333d49"/>
+                  <rect x="64" y="94" width="20" height="16" rx="2" fill="#333d49"/>
+                </svg>
+                <span class="t3-room-name">Field jacket</span>
+              </button>
+            </li>
+            <li class="t3-room-item" data-t3-room-item>
+              <button class="t3-room-hit" type="button">
+                <span class="t3-room-label">SP-04</span>
+                <svg class="t3-room-object" viewBox="0 0 120 160" aria-hidden="true">
+                  <path d="M32 62h56l6 74H26z" fill="#7d8b7a"/>
+                  <path d="M44 62c0-14 6-22 16-22s16 8 16 22" fill="none" stroke="#5d6a5a" stroke-width="4"/>
+                </svg>
+                <span class="t3-room-name">Canvas tote</span>
+              </button>
+            </li>
+            <li class="t3-room-item" data-t3-room-item>
+              <button class="t3-room-hit" type="button">
+                <span class="t3-room-label">SP-05</span>
+                <svg class="t3-room-object" viewBox="0 0 120 160" aria-hidden="true">
+                  <path d="M24 98a36 36 0 0 1 72 0z" fill="#6b7a8c"/>
+                  <rect x="16" y="98" width="76" height="10" rx="5" fill="#57646f"/>
+                </svg>
+                <span class="t3-room-name">Wool cap</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="lede note">On a phone the room becomes a horizontal strip with scroll snapping. Depth needs width to read, and a rail needs a thumb's reach.</p>
     </div>
   </section>
 

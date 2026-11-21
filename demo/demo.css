@@ -133,6 +133,11 @@ h3 { font-size: 1.1rem; margin: 0 0 8px; }
 .foot { padding: 32px 0; background: var(--cream); }
 .foot p { margin: 0; font-size: 0.9rem; color: var(--muted); }
 
+/* ---------- the room ---------- */
+/* The room paints itself dark, so it keeps its own padding; the margin is the
+   only page-level decision here. */
+.t3-room { margin-top: 28px; }
+
 @media (max-width: 980px) {
   .t3-copy-front { padding-left: 0; } /* stacked: nothing is projected, so no pad */
   .t3-photo-main { max-width: 420px; }
