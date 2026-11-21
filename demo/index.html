@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3D Web Template — working demo</title>
-<meta name="description" content="A dependency-free demo of the 3D primitives in this template: a layered hero that recedes on scroll, a sticker in front of the scene, photos set into cards, a room you browse, a cut-out surface you could touch, and CSS-numbered sections.">
+<meta name="description" content="A dependency-free demo of the 3D primitives in this template: a layered hero that recedes on scroll, a sticker in front of the scene, photos set into cards, a room you browse, a cut-out surface you could touch, a screen that smears into the next, and CSS-numbered sections.">
 <link rel="stylesheet" href="../css/3d.css">
 <link rel="stylesheet" href="demo.css">
 </head>
@@ -197,6 +197,45 @@
       </div>
 
       <p class="lede note">On a phone the room becomes a horizontal strip with scroll snapping. Depth needs width to read, and a rail needs a thumb's reach.</p>
+    </div>
+  </section>
+
+  <section class="band" id="wipe">
+    <div class="wrap">
+      <h2>One screen smearing into the next</h2>
+      <p class="lede">Scroll the panel through the middle of the screen. The first screen accelerates out of focus and the second resolves underneath it; scroll back and it runs the other way.</p>
+      <p class="lede note">The streak is one gaussian and one transform: the filter is applied before the transform, so a screen scaled wider than it is tall renders its blur sideways. No script, or reduced motion, and both screens simply stack.</p>
+
+      <div class="t3-wipe" data-t3-wipe>
+        <div class="t3-wipe-stage">
+          <article class="t3-wipe-screen">
+            <p class="t3-wipe-bar"><span class="t3-wipe-tag">Panel 01</span><span class="t3-wipe-meta">At rest</span></p>
+            <h3 class="t3-wipe-title">Depth is a decision</h3>
+            <p class="t3-wipe-line">Three layers, one camera, and a copy column narrow enough to stay out of the picture.</p>
+            <svg class="t3-wipe-art" viewBox="0 0 480 130" aria-hidden="true" focusable="false">
+              <rect x="0" y="88" width="196" height="18" rx="9" fill="#e4d9c6"/>
+              <rect x="34" y="56" width="196" height="18" rx="9" fill="#c2ae8b"/>
+              <rect x="68" y="24" width="196" height="18" rx="9" fill="#f2b134"/>
+            </svg>
+          </article>
+
+          <article class="t3-wipe-screen t3-wipe-screen--dark">
+            <p class="t3-wipe-bar"><span class="t3-wipe-tag">Panel 02</span><span class="t3-wipe-meta">In motion</span></p>
+            <h3 class="t3-wipe-title">Then it is a smear</h3>
+            <p class="t3-wipe-line">The same screen, one gaussian and a wider scale, is a speed line with a heading on it.</p>
+            <svg class="t3-wipe-art" viewBox="0 0 480 130" aria-hidden="true" focusable="false">
+              <g fill="none" stroke-linecap="round">
+                <path d="M18 40h300" stroke="#f2b134" stroke-width="7"/>
+                <path d="M58 62h360" stroke="#7fd6c9" stroke-width="7"/>
+                <path d="M8 84h250" stroke="#f2b134" stroke-width="7" opacity="0.5"/>
+                <path d="M88 106h320" stroke="#7fd6c9" stroke-width="7" opacity="0.32"/>
+              </g>
+            </svg>
+          </article>
+
+          <div class="t3-wipe-flash" aria-hidden="true"></div>
+        </div>
+      </div>
     </div>
   </section>
 
