@@ -20,8 +20,8 @@ ends with the verify-then-commit loop.
 | Path | What it is |
 |---|---|
 | `AGENTS.md` | The map for an agent: where each rule lives, the ten traps in one table, the couplings, and the verification recipe. |
-| `css/3d.css` | The primitives: scene, stage, pop, sticker, halo, the layered hero, photos in cards, CSS-numbered sections, and the guards. |
-| `js/scene.js` | 280 lines. Pointer tilt and scroll recede, gated on a real pointer and on `prefers-reduced-motion`. |
+| `css/3d.css` | The primitives: scene, stage, pop, sticker, halo, the layered hero, photos in cards, the room, CSS-numbered sections, and the guards. |
+| `js/scene.js` | 397 lines. Pointer tilt, scroll recede, and the room's selection, gated on a real pointer and on `prefers-reduced-motion`. |
 | `index.html` | Sends a bare visit to `demo/`. Nothing else. |
 | `demo/` | A working page that uses every primitive. Open it, move the mouse, scroll. |
 | `docs/findings.md` | The research and the eight traps, with code. Read this before editing the CSS. |
@@ -98,6 +98,11 @@ config, no init call, no framework.
 | `.t3-card` | any card | Stacked shadow, a 4px lift on hover, and `preserve-3d`. |
 | `.t3-card-photo` | an image in a card | Bleeds to the card edge. No `translateZ` — see trap 7. |
 | `.t3-turn` / `.t3-in` | a card | Hinged entrance. `scene.js` adds `t3-in` on arrival. |
+| `.t3-room` | the section | A rail of objects in a dark room. The window and the paint; clips like `.t3-hero`. |
+| `.t3-room-space` / `.t3-room-row` | inside the room | The padded space and the row. **Flat on purpose** — a `preserve-3d` row loses its own click targets, so the depth is focus and not a camera: see `docs/reel-pass-november-2026.md` § 1. |
+| `.t3-room-item` | each object | `--t3-room-item-w` wide, shrunk and dimmed by `--t3-room-dist`, which `scene.js` writes. Hangs from its top edge. |
+| `.t3-room-hit` / `.t3-room-object` | the button / the artwork | The button carries the corner bracket; only the artwork blurs. |
+| `.t3-room-label` / `.t3-room-name` | inside the button | The tag on its stem above the object, the name below it. |
 | `.t3-js` | the `<html>` | Added by `scene.js`. `.t3-js .t3-turn` is what hides a card before it arrives, so a page with no script never hides one. |
 | `.t3-dark` | the wrapper or `<html>` | Theme hook: swaps the halo, wash and photo shadow for their dark tokens. `[data-theme="dark"]` does the same job. |
 | `.t3-numbered` | the `<main>` | Numbers every `section[id]` from CSS counters. No markup changes. |
@@ -105,13 +110,15 @@ config, no init call, no framework.
 | `data-t3-hero` | the scene | Adds the scroll recede to that scene. |
 | `data-t3-card` | a card | Pointer tilt for one card. |
 | `data-t3-turn` | a card | Adds it to the reveal observer. |
+| `data-t3-room` / `data-t3-room-item` | room / object | What the room in `scene.js` binds to: click, Tab, arrow keys, Home and End. Without the script the room is an ordinary row of buttons — every object visible, every label readable. |
 
 Tokens live in `:root`: `--t3-perspective`, `--t3-lift`, `--t3-duration`,
 `--t3-ease`, `--t3-shadow`, `--t3-shadow-lift`, `--t3-halo`, `--t3-copy-lift`,
 `--t3-copy-inset`,
 `--t3-depth-back`, `--t3-sticker-lift`, `--t3-stage-height`, `--t3-copy-width`,
 `--t3-card-pad`, `--t3-card-radius`, `--t3-card-photo-height`,
-`--t3-photo-shadow`, `--t3-wash`, `--t3-camera`.
+`--t3-photo-shadow`, `--t3-wash`, `--t3-camera`, `--t3-room-shrink`,
+`--t3-room-item-w`, `--t3-room-pad-top`, `--t3-room-ink`, `--t3-room-accent`.
 
 `--t3-card-pad` must equal the card's own padding, or the photo stops meeting the
 card edge.

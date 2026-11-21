@@ -71,6 +71,15 @@ The rule is not up for debate — a change that re-introduces one is rejected.
 - **Tilt ceilings:** 5°/4° for a scene, 4°/3° for the hero, 3°/2° over a
   photograph, 3°/4° for a card. They are ceilings, not suggestions; each was set
   by the text nearest the layer.
+- **The room is flat on purpose.** `transform-style: preserve-3d` on
+  `.t3-room-row` moves the objects but does not move their hit areas with them:
+  `elementFromPoint` at the visual centre of four of the five demo objects
+  returned the row itself, so only the selected object could ever be clicked.
+  Scale, opacity and a blur on the artwork carry that depth instead. Do not put
+  `translateZ` back into that row without re-running the probe.
+- **The room's distance cap** is `min(var(--t3-room-dist), 3)` in `css/3d.css`
+  and `cap = 3` in `scene.js`. An item set further back than the stylesheet
+  expects moves without dimming, which reads as a bug rather than depth.
 - **`--t3-copy-inset`** is arithmetic, not taste: `lift / (perspective - lift) x
   origin`, divided by the projection factor, as a percentage of the scene. Change
   `--t3-copy-lift`, `--t3-perspective`, `--t3-camera` or `--t3-copy-width` and it
@@ -107,6 +116,8 @@ On the demo, measure — do not eyeball:
 - [ ] Both themes: no dark hole in a light illustration, no brown halo smudge.
 - [ ] Text contrast at least 4.5:1 in both themes, measured, not felt.
 - [ ] Print preview: nothing invisible, no sticker, no transform.
+- [ ] The room: clicking an object moves the badge and the bracket to that
+      object and to no other. A 3D row fails this while looking perfect.
 - [ ] Console clean.
 
 A rendering that was not looked at is not verified. Write "not viewed" rather
