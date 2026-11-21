@@ -25,7 +25,7 @@ or a shader, not a `transform`.
 ## Four technique families, cheapest first
 
 1. **Layer depth.** Three flat images (background, door, clouds) moved at
-tdifferent rates. Their portal lesson says outright that there is no 3D engine
+   different rates. Their portal lesson says outright that there is no 3D engine
    involved and that the depth comes from the layering. Cost: three images and a
    transform each. This is the only family a dependency-free page should use.
 2. **Scroll-scrubbed frames.** A character sequence swapped against the
