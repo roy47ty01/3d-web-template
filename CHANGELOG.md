@@ -6,6 +6,33 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — a new primitive or token.
 - **MAJOR** — an existing class or token changes meaning.
 
+## 0.3.1 — 21 November 2026
+
+A pass over how this repo is worded, done for the reader that arrives with no
+context and reads the files in order: an agent.
+
+**Added**
+
+- `AGENTS.md` — the map. What the repo is in one paragraph, which file holds the
+  rule for which task, all nine traps as one table of rule-and-symptom, the
+  couplings that must move together (the 980/981px hero breakpoint, the card
+  padding token, one stage per scene, the tilt ceilings), the never list, and
+  the verify-then-commit loop.
+- A short § Writing here, so the voice survives the next hand: claim then
+  evidence, one imperative per sentence, name the cost, say what was not taken,
+  label the unverified, date every source.
+
+**Changed**
+
+- `README.md` points at `AGENTS.md` in the opening paragraphs and lists it in
+  the file table. Nothing in `css/3d.css`, `js/scene.js` or `demo/` changed: this
+  release finds the rules, it does not alter them.
+- One typo fixed in `docs/3d-web-templates.md`.
+
+**Not ported**
+
+- Nothing. This release is documentation only.
+
 ## 0.3.0 — 19 November 2026
 
 Measured documentation of photographs in a 3D page, written while rebuilding a
