@@ -61,6 +61,14 @@
   --t3-room-ink: #eef3f8;
   --t3-room-accent: #f2b134;
 
+  /* The touchable surface: a ground, a sheet inset into it, a subject cut out
+     and laid on the sheet. Literal colours, like the room's: a slab shot
+     against a landscape keeps its own colours in either theme. */
+  --t3-surface-radius: 26px;
+  --t3-surface-sheet: #f4efe4;
+  --t3-surface-ink: #1d2422;
+  --t3-surface-accent: #17c3b2;
+
   /* The wash behind the hero, and where the camera sits. */
   --t3-wash: rgba(251, 231, 194, 0.95);
   --t3-wash-dark: rgba(59, 43, 22, 0.9);
@@ -522,6 +530,245 @@
   opacity: 0.72;
 }
 
+/* ---------- the touchable surface ----------
+   A slab you could put a hand on: a ground, a sheet inset into it, and a
+   subject cut out of its own background and laid on the sheet.
+
+   The cut is the whole technique. A portrait inside a rectangle is a picture
+   of a person; the same portrait with no rectangle is a person standing on the
+   paper, because the silhouette edge is what the eye reads as contact. So no
+   frame is drawn around the figure, and .t3-surface-sheet crops it with
+   overflow: hidden. One subject per surface, or the eye stops knowing which
+   shape it is supposed to touch.
+
+   The demo's figure and ground are drawn in SVG. This template holds no
+   photographs and loads nothing, so a photographic cut-out becomes a drawn
+   one; the compositing — and its cost — is the part being shown.
+
+   The chips are real <button> and <a> elements, so the surface is usable with
+   no script at all. There is no JS here on purpose: nothing in this primitive
+   moves, so nothing needs a guard beyond a press. */
+.t3-surface-panel {
+  position: relative;
+  overflow: hidden;
+  /* The source's slab measured about 1.6:1. Wider than that and the sheet
+     reads as a banner, with the subject stranded in the middle of it. */
+  aspect-ratio: 5 / 3;
+  /* A floor for old browsers and for a panel placed in a short container. */
+  min-height: 300px;
+  border-radius: var(--t3-surface-radius);
+  color: var(--t3-surface-ink);
+  /* A ground built from gradients alone, so the panel is complete before any
+     artwork arrives and a host page can drop .t3-surface-ground over it. */
+  background:
+    radial-gradient(90% 60% at 74% 4%, #d8fff8 0%, transparent 58%),
+    linear-gradient(
+      178deg,
+      #6fe0da 0%,
+      #37c6c0 34%,
+      #1a9c96 58%,
+      #0a4f4c 82%,
+      #06302f 100%
+    );
+  box-shadow:
+    0 38px 64px -40px rgba(6, 40, 38, 0.65),
+    0 2px 0 rgba(6, 40, 38, 0.2);
+}
+
+.t3-surface-ground {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* The sheet. Its inset is what leaves the ground showing as a margin, and its
+   bottom edge is what crops the figure, so the two numbers move together:
+   raise the bottom inset and the subject loses its shoulders. */
+.t3-surface-sheet {
+  position: absolute;
+  inset: 11% 5% 13% 5%;
+  overflow: hidden;
+  border-radius: 16px;
+  color: var(--t3-surface-ink);
+  /* The faint contour lines of the source's paper, as one gradient: rings
+     centred below the sheet, so they run out across it like a survey map. */
+  background:
+    repeating-radial-gradient(
+      circle at 26% 118%,
+      rgba(29, 36, 34, 0.055) 0 1px,
+      transparent 1px 26px
+    ),
+    var(--t3-surface-sheet);
+  box-shadow: 0 16px 34px -22px rgba(6, 40, 38, 0.55);
+}
+
+.t3-surface-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  padding: clamp(10px, 1.6vw, 18px) clamp(12px, 1.8vw, 20px) 0;
+}
+
+/* A brand set as two stacked words, letterspaced: small type is what makes a
+   sheet read as a printed object rather than a card with a heading. */
+.t3-surface-brand {
+  margin: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.t3-surface-mark {
+  margin: 0 auto;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.t3-surface-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Ink on the accent, not white on it. The source's chip was white on a
+   turquoise of about the same lightness; that pairing is the one thing in the
+   frame that cannot be copied. Measured, in docs/reel-pass-november-2026.md. */
+.t3-surface-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--t3-surface-accent);
+  color: #06251f;
+  font: inherit;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.t3-surface-dot {
+  width: 5px;
+  height: 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+
+.t3-surface-menu {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(29, 36, 34, 0.28);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--t3-surface-ink);
+  cursor: pointer;
+}
+.t3-surface-menu::before,
+.t3-surface-menu::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 11px;
+  height: 1.5px;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.t3-surface-menu::before {
+  top: 10px;
+}
+.t3-surface-menu::after {
+  bottom: 10px;
+}
+
+.t3-surface-pill:focus-visible,
+.t3-surface-menu:focus-visible {
+  outline: 2px solid #06251f;
+  outline-offset: 2px;
+}
+
+/* The press is the only movement in this primitive: a chip going into the
+   surface, 1px. Nothing to disarm, because nothing else animates. */
+.t3-surface-pill:active,
+.t3-surface-menu:active {
+  transform: translateY(1px);
+}
+
+@media (hover: hover) {
+  .t3-surface-pill:hover {
+    filter: brightness(1.06);
+  }
+}
+
+/* The cut-out. No border, no frame, no paper behind it: the drop-shadow is
+   taken from the silhouette, so the shadow is the subject's, not a box's. */
+.t3-surface-figure {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 1;
+  width: min(44%, 380px);
+  margin: 0;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 14px 18px rgba(6, 40, 38, 0.22));
+  pointer-events: none;
+}
+.t3-surface-figure > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The note card straddles the sheet's corner and the ground behind it, so it
+   carries its own paper and its own ink. A note that inherited the sheet's
+   colour would change colour as it crossed the edge: see trap P2. */
+.t3-surface-note {
+  position: absolute;
+  left: clamp(8px, 1.4vw, 14px);
+  bottom: clamp(8px, 1.4vw, 14px);
+  z-index: 3;
+  width: 96px;
+  margin: 0;
+  padding: 8px 9px 9px;
+  border: 1px solid rgba(29, 36, 34, 0.22);
+  border-radius: 6px;
+  background: #fffdf8;
+  color: #1d2422;
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.t3-surface-note::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 20px;
+  height: 6px;
+  border-radius: 0 6px 0 4px;
+  background: var(--t3-surface-accent);
+}
+.t3-surface-note p {
+  margin: 6px 0 0;
+}
+
 /* ---------- the guards ----------
    None of these are optional. They are why this is a template and not a demo. */
 
@@ -583,6 +830,26 @@
   .t3-room-object {
     background: none;
     border-color: currentColor;
+  }
+  /* A dark ground and a drop shadow are ink the page does not need. The
+     figure stays: it is the subject of the band, not a decoration. */
+  .t3-surface-ground {
+    display: none !important;
+  }
+  .t3-surface-panel {
+    background: none !important;
+    box-shadow: none !important;
+    border: 1px solid currentColor;
+  }
+  .t3-surface-sheet {
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+  .t3-surface-figure {
+    filter: none !important;
+  }
+  .t3-surface-pill {
+    border: 1px solid currentColor;
   }
 }
 
@@ -673,6 +940,43 @@
   }
   .t3-room-label::before {
     display: none;
+  }
+}
+
+/* ---------- a surface on a phone ----------
+   A tablet still has width for the slab, so only the inset and the figure
+   change there. A 5:3 slab on a 390px phone is 208px tall — the sheet inside
+   it would be 160px, which is a strip, not a surface. Below 640px it stands
+   up, and the note card goes: 96px of 9.6px type is not a note, it is a
+   smudge. */
+@media (max-width: 980px) {
+  .t3-surface-sheet {
+    inset: 9% 4% 11% 4%;
+  }
+  .t3-surface-figure {
+    width: min(44%, 340px);
+  }
+}
+@media (max-width: 640px) {
+  .t3-surface-panel {
+    aspect-ratio: 4 / 5;
+  }
+  .t3-surface-sheet {
+    inset: 8% 4% 10% 4%;
+  }
+  .t3-surface-figure {
+    width: min(74%, 288px);
+  }
+  .t3-surface-note {
+    display: none;
+  }
+  .t3-surface-pill,
+  .t3-surface-menu {
+    min-height: 32px;
+    height: 32px;
+  }
+  .t3-surface-pill {
+    padding: 0 11px;
   }
 }
 

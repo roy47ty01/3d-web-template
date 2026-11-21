@@ -138,6 +138,10 @@ h3 { font-size: 1.1rem; margin: 0 0 8px; }
    only page-level decision here. */
 .t3-room { margin-top: 28px; }
 
+/* ---------- the surface ---------- */
+/* The panel paints itself; the margin is the only page-level decision here. */
+.t3-surface-panel { margin-top: 28px; }
+
 @media (max-width: 980px) {
   .t3-copy-front { padding-left: 0; } /* stacked: nothing is projected, so no pad */
   .t3-photo-main { max-width: 420px; }
