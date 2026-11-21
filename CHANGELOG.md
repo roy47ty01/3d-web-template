@@ -6,6 +6,49 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — a new primitive or token.
 - **MAJOR** — an existing class or token changes meaning.
 
+## 0.4.0 — 21 November 2026
+
+Six links researched in one pass, and the pass found a bug in the demo. As with
+0.3.0, a documentation release counts as minor here.
+
+**Added**
+
+- `docs/sources.md` — the register. Every post the research rests on, who made it,
+  when, what it was, whether the frames were ever seen, and where the finding
+  went. The six links are in it with their tracking parameters stripped, so they
+  outlive the chat they arrived in.
+- `docs/reel-pass-november-2026.md` — the pass itself: the one technique the
+  template does not have (a room you browse, built from flat planes on one
+  camera, no WebGL), the four libraries the most-liked post recommends and why
+  each is refused, and the four funnels. It also corrects two things that were
+  true in 2024 and are not true now: GSAP is free for commercial use, and React
+  Bits is "MIT + Commons Clause", not MIT.
+- `--t3-copy-inset`, and trap 8 in `docs/findings.md` to explain the number.
+- `README.md`: `.t3-js` and `.t3-dark` documented, which they were not.
+
+**Fixed**
+
+- **Trap 8, the hero copy projected off the page.** The copy column rides 90px
+  forward on a camera whose origin is at 62%, so it is projected 5.5% of the
+  scene to the left. Wide gutters absorbed it; a 20px gutter did not. Measured:
+  the column started at -31.2px at 981, -33.5px at 1024 and -37.7px at 1100, so
+  the first ~33px of every hero line was clipped. Nothing reported it, because
+  `.t3-hero` clips the bleed on the right and the copy on the left with one rule,
+  so `scrollWidth` still equalled `clientWidth`. `--t3-copy-inset` is the
+  projection cancelled (5.1%). After: the text starts 0.3px inside the scene's
+  left edge at 981, 1024, 1100, 1280, 1440 and 1920.
+- A stale comment in `js/scene.js` that called the card ceiling four degrees on
+  both axes. It is three on x, four on y.
+- `README.md`: `scene.js` is 280 lines, not ~290.
+
+**Not ported**
+
+- **The room.** No demo, and no frames were watched for this pass, so it is a
+  specification in a document rather than a class in the stylesheet.
+- **Lenis, GSAP, Vanta and React Bits.** Four dependencies, recommended together
+  by a post with 7.7K likes. It is a good list and the wrong list for a page that
+  has to open from a memory stick.
+
 ## 0.3.1 — 21 November 2026
 
 A pass over how this repo is worded, done for the reader that arrives with no
