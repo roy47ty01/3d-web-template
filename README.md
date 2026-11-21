@@ -12,22 +12,24 @@ part worth copying. Photographs get their own file —
 traps that depth alone does not, and both of them cost a visible bug.
 
 If you are an agent working in this repo, read [AGENTS.md](AGENTS.md) first. It
-says which file holds the rule you need, lists all nine traps on one page, and
+says which file holds the rule you need, lists all ten traps on one page, and
 ends with the verify-then-commit loop.
 
 ## What is in the box
 
 | Path | What it is |
 |---|---|
-| `AGENTS.md` | The map for an agent: where each rule lives, the nine traps in one table, the couplings, and the verification recipe. |
+| `AGENTS.md` | The map for an agent: where each rule lives, the ten traps in one table, the couplings, and the verification recipe. |
 | `css/3d.css` | The primitives: scene, stage, pop, sticker, halo, the layered hero, photos in cards, CSS-numbered sections, and the guards. |
-| `js/scene.js` | ~290 lines. Pointer tilt and scroll recede, gated on a real pointer and on `prefers-reduced-motion`. |
+| `js/scene.js` | 280 lines. Pointer tilt and scroll recede, gated on a real pointer and on `prefers-reduced-motion`. |
 | `index.html` | Sends a bare visit to `demo/`. Nothing else. |
 | `demo/` | A working page that uses every primitive. Open it, move the mouse, scroll. |
-| `docs/findings.md` | The research and the seven traps, with code. Read this before editing the CSS. |
+| `docs/findings.md` | The research and the eight traps, with code. Read this before editing the CSS. |
 | `docs/photographs.md` | Real photographs in a 3D page: the scrim, the plate, drawn icons instead of emoji, two traps, and how to measure the contrast behind a headline. |
 | `agents/repo-sync.md` | The agent that ports changes from a project back into this repo. |
 | `agents/README.md` | How to install that agent in another project. |
+| `docs/sources.md` | The register: every post this research rests on, when it was read, what it was, and whether the frames were ever seen. |
+| `docs/reel-pass-november-2026.md` | Six links in one day: one technique the template does not have, four libraries that are dependencies, four funnels. |
 | `CHANGELOG.md` | What changed, by version. |
 | `LICENSE` | MIT. Copy it with the files. |
 
@@ -87,7 +89,7 @@ config, no init call, no framework.
 | `.t3-halo` | the artwork | Warm glow **as a `box-shadow`**. See trap 2. |
 | `.t3-hero` | the section | The window: clips the photo that bleeds off the right edge. |
 | `.t3-split` | the hero's stage | Flex row, `min-height`, `preserve-3d`. The JS recedes it on scroll. |
-| `.t3-copy-front` | the words | `50%` column at `--t3-copy-lift`, so no sentence crosses a photo. |
+| `.t3-copy-front` | the words | `50%` column at `--t3-copy-lift`, so no sentence crosses a photo. Padded by `--t3-copy-inset`, or the camera projects the column off the page — trap 8. |
 | `.t3-photo` | a figure | Framed, clipped artwork slot. Glow is a shadow. |
 | `.t3-photo-main` | the big figure | Hangs `9%` off the right edge, turned `-9deg` on y. |
 | `.t3-photo-back` | the small figure | Sits at `--t3-depth-back`, behind the scene. One per hero. |
@@ -96,6 +98,8 @@ config, no init call, no framework.
 | `.t3-card` | any card | Stacked shadow, a 4px lift on hover, and `preserve-3d`. |
 | `.t3-card-photo` | an image in a card | Bleeds to the card edge. No `translateZ` — see trap 7. |
 | `.t3-turn` / `.t3-in` | a card | Hinged entrance. `scene.js` adds `t3-in` on arrival. |
+| `.t3-js` | the `<html>` | Added by `scene.js`. `.t3-js .t3-turn` is what hides a card before it arrives, so a page with no script never hides one. |
+| `.t3-dark` | the wrapper or `<html>` | Theme hook: swaps the halo, wash and photo shadow for their dark tokens. `[data-theme="dark"]` does the same job. |
 | `.t3-numbered` | the `<main>` | Numbers every `section[id]` from CSS counters. No markup changes. |
 | `data-t3-tilt` / `data-t3-stage` | scene / stage | What `scene.js` binds to. |
 | `data-t3-hero` | the scene | Adds the scroll recede to that scene. |
@@ -104,6 +108,7 @@ config, no init call, no framework.
 
 Tokens live in `:root`: `--t3-perspective`, `--t3-lift`, `--t3-duration`,
 `--t3-ease`, `--t3-shadow`, `--t3-shadow-lift`, `--t3-halo`, `--t3-copy-lift`,
+`--t3-copy-inset`,
 `--t3-depth-back`, `--t3-sticker-lift`, `--t3-stage-height`, `--t3-copy-width`,
 `--t3-card-pad`, `--t3-card-radius`, `--t3-card-photo-height`,
 `--t3-photo-shadow`, `--t3-wash`, `--t3-camera`.
