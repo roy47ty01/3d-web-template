@@ -6,18 +6,36 @@ never lost to a chat scroll.
 
 ## What this pass actually saw
 
-The captions, each page's own description of its image, and the public comments.
-**Not the frames.** None of the six was played for this pass, so every technique
-named below was named by the post or inferred from its comments, never watched.
-`findings.md` § 1 set that precedent about a reel whose frames were unreadable,
-and it applies here at full strength: six posts produced one technique the
-template does not have, one library question, and four funnels.
+The first read of these six was words only: captions, each page's own description
+of its image, and the public comments. **The frames were not available**, and half
+this file was written as inference, labelled as inference.
 
-## 1. The one technique: a room you browse
+Then the four reels were downloaded (`yt-dlp`, no login needed) and sampled at
+even intervals with `ffmpeg`, nine frames each, and looked at. So the four reels
+are **viewed**: what follows in § 1 and § 3 about those videos is now observed.
+The two carousels were not sampled and stay **read only**.
 
-@marcelodesignxh, 18 November 2026. The page describes its own image as lighting,
-screen, sofa, bedroom. The caption is "Wait for it. 🥷". Its comments name the
-trick better than the caption does:
+What changed with the frames: the technique in § 1 is not the one the first pass
+guessed. The guess was a walkable room of five planes on one camera, which is a
+plausible reading of the words "spatial browsing" and wrong. The rest held up —
+the library list, the funnels, the comment section — which is worth saying
+plainly, because a doc that only ever confirms itself is not research.
+
+## 1. The reel is four interactions, and one of them is worth having
+
+@marcelodesignxh, 18 November 2026. 9.83 seconds, cut as a montage. The caption
+is "Wait for it. 🥷". On screen, in order:
+
+| Time | The card | What it shows |
+|---|---|---|
+| 0.0–3.4s | the presenter, talking to camera | "Steal these interactions to make your Website feel premium." |
+| ~3.5s | **Transition as Scroll** | A rounded card on a pale gradient holding a hero of clouds, the words THE DEEP-SEA LAYER / OF COMPUTE masking in over it, a nav row and a pill call to action. |
+| ~4.7s | (untitled) | A single frame of heavy motion blur on a white card: a fast wipe between two screens, unreadable on purpose. |
+| 5.9–8.4s | **Spatial Browsing** | A dark shop, a rail of garments, one selected. Detailed below. |
+| ~9.4s | **Touchable Surface** | A portrait cut out of its background and laid over a cream panel that fills most of the frame, a STORE pill, a small info card at the lower left. |
+
+Four techniques, four labels, one reel. Only the third is something this template
+does not already have, and it is the third that the comments ask about:
 
 > "How do I do the spatial browsing? Is there a tutorial?"
 
@@ -32,34 +50,47 @@ repo is built on. The reveal is the whole point, and the same page is called
 unusable by people watching it. That is `README` rule 5 arriving as public
 evidence rather than as taste.
 
-### What a room costs without WebGL
+### What the shop screen is
 
-A room is the camera the hero already has, with more planes and a floor.
-PortSwigger's pure-CSS 3D world (2021) builds one from six absolutely positioned
-planes at `translateZ`, with `perspective: 10em` and a `perspective-origin` at eye
-height. Chrome's performant-parallaxing note is the cheaper variant: a 1px
-perspective with `translateZ` and a compensating scale. Neither needs a script, a
-shader or a library.
+A dark navy space with a faint 92px grid, a soft vignette and a floor. One thin
+rail runs the full width, brighter at the middle and fading at both ends.
+Garments hang from it: about a dozen, in a single row, all at one height, each
+one smaller, darker and softer the further it sits from the middle. The one in
+focus wears a selection bracket — four corner ticks, not a box — with a small
+SKU tag on a stem above it, and its name and price in a thin strip beneath the
+rail. A pill nav (STORE, CLOTHING, CAPS, BAGS, SHOES) sits over the bottom edge,
+a back arrow at the top left, a bag icon at the top right. Choosing an object
+replaces the row with one garment, arrows either side, and a panel that slides
+in with size, quantity and a call to action.
 
-What a room needs that the hero does not:
+The depth in that screen is **depth of field, not a camera**. Everything is on
+one plane; the focused object is simply bigger, brighter and sharper than its
+neighbours. That is why it survives on a phone, and it is the part worth copying.
 
-- **A floor and a ceiling**, both rotated 90°, plus two side walls. Five or six
-  planes, all on one camera.
-- **`perspective-origin` at eye height**, roughly 45–55% vertically, so the walls
-  converge at the viewer's eye and not at the box's centre.
-- **Solid planes or gradients.** A blurred plane is wider than its parent and is
-  trap 2; a room built from blurred walls has a scrollbar in it.
-- **No text inside the scene.** A room is a picture. The words go in front of it,
-  flat, which is `photographs.md` § 2.1's arrangement.
-- **A tilt cap of about 3°.** A room tilted ten degrees reads as a broken room,
-  not a deeper one.
+### What was built, and what it cost
 
-Every item on that list is vocabulary `css/3d.css` already owns: one camera, one
-origin, `preserve-3d`, `translateZ`. None of it is a new dependency.
+`.t3-room` in `css/3d.css`, `T3.room()` in `js/scene.js`, and a band in
+`demo/index.html`: a rail, a row of objects, one selection, click or arrow keys.
+No WebGL, no library, no canvas, no new request.
 
-**Not ported, on purpose.** A primitive with no demo is a claim, not a feature
-(`agents/repo-sync.md`), and the room itself was never watched. The list above is
-a specification for the day the demo can build one, not shipped code.
+It was built twice. The first version was the obvious one — `perspective` on the
+space, `preserve-3d` on the row, each object translated back in `z` by one step
+per item away from the selection. It looked right. It could not be clicked:
+`elementFromPoint` at the visual centre of four of the five objects returned the
+row itself, so only the selected object was ever reachable. Measured, in Chrome:
+with every object's transform reduced to a 2D `matrix()` and `preserve-3d` still
+on the row, still broken; with `transform-style: flat` on the row, all five
+returned their own button. The distance in `z` was never the problem. The 3D
+context was.
+
+So the row is flat, and the depth comes from a `scale` (down to 0.82), an
+`opacity` (down to 0.55) and a `blur` on the artwork only (up to 1.5px). Three 2D
+properties that hit-test exactly where they paint. A camera the reader cannot
+click is not depth; it is a picture of depth.
+
+What was not taken from the screen: the shop's name, its prices, its SKUs, its
+category names and its garments. The demo invents its own — five objects, SP-01
+to SP-05 — because the brief in `agents/repo-sync.md` is techniques, not content.
 
 ## 2. The library post, and why it is the useful one
 
@@ -101,7 +132,7 @@ clause first.
 | @himanshubuilds, 4 Nov (scrolltide) | copy a prompt, paste it into an AI builder | Already written up in `floating-window-pass.md` and `3d-web-templates.md`. |
 | @tmvdesignstudio, 20 Nov | "comment LAB" for a course and its prompts | A premise worth answering, below. |
 | @digitalmarketingtrending, 13 Nov | "1000s AI codes", ten categories | Nothing to do with 3D websites. AI image prompts. |
-| @kevin.snippet, 3 Sep | "3 Frontend Libraries… Day 1" | The caption names none of them; 1.9K comments all say the trigger word. |
+| @kevin.snippet, 3 Sep | "3 Frontend Libraries… Day 1" | 41 seconds of a monitor on a desk showing four sites — a pen product page, a scroll-drawn travel map, a floating-card gallery — with captions "buttery smooth scrolling", "Scroll Animation", "make your site". **The three library names never appear on screen**; they are spoken. The frames settle it, which is one more than the words did. |
 
 **The tmv premise is half right and half backwards.** "The moment I switched from
 basic template looking websites and started creating interactive designs, that's
@@ -119,22 +150,33 @@ do in CSS. The other eight need a model, a licence and a download.
 
 ## 4. What this pass changed
 
-- `sources.md` — the register, so none of the six is lost.
-- This file.
+- `css/3d.css` — **the room**: `.t3-room`, `.t3-room-space`, `.t3-room-rail`,
+  `.t3-room-row`, `.t3-room-item`, `.t3-room-hit`, `.t3-room-object`,
+  `.t3-room-label`, `.t3-room-name`; `--t3-room-shrink`, `--t3-room-item-w`,
+  `--t3-room-pad-top`, `--t3-room-ink`, `--t3-room-accent`; and the guards —
+  no transition on request, no camera or blur on a phone, a plain row in print.
+- `js/scene.js` — `T3.room(container, { itemSelector })`, plus `data-t3-room` and
+  `data-t3-room-item` wired into `init()`. Clicks, arrow keys, Home and End; the
+  selection is `aria-current` and the badge follows focus.
+- `demo/index.html` — a fifth band using it, five invented objects.
+- `sources.md` — the register, so none of the six is lost, with the viewing
+  status of each row.
+- This file, rewritten where the frames contradicted the first pass.
 - Trap 8 in `findings.md`, and its fix in `css/3d.css`. That one did not come
-  from a reel: it came from auditing the demo, and it is the only change to the
-  stylesheet in this release. The hero copy was being projected off the left of
-  the page between 981 and 1100px wide.
-- Nothing else. No dependency, no artwork, no new primitive.
+  from a reel: it came from auditing the demo, and the hero copy was being
+  projected off the left of the page between 981 and 1100px wide.
+- Nothing else. No dependency, no artwork, no network request.
 
 ## 5. Sources
 
-Every link, with its date and status, is in `sources.md`. The technical pages
-behind § 1 and § 2:
+Every link, with its date and status, is in `sources.md`. The four reels were
+watched on 21 November 2026 by downloading them and sampling frames; the two
+carousels were read. The technical pages behind § 1 and § 2:
 
 - PortSwigger, "Creating a 3D world in pure CSS", 13 October 2021 — <https://portswigger.net/research/creating-a-3d-world-in-pure-css>
 - Chrome for Developers, "Performant Parallaxing" — <https://developer.chrome.com/blog/performant-parallaxing>
 - Atomic Object, "How to fake a 3D stage", 29 April 2026 — <https://spin.atomicobject.com/how-to-fake-3d-stage>
+- MDN, `Element.elementFromPoint` — used for the measurement in § 1 — <https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint>
 - Lenis, issue #534, "Please respect `prefers-reduced-motion`", 31 July 2026 — <https://github.com/darkroomengineering/lenis/issues/534>
 - GSAP pricing ("now free") — <https://gsap.com/pricing>
 - React Bits — <https://github.com/DavidHDev/react-bits>

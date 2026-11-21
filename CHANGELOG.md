@@ -6,6 +6,45 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — a new primitive or token.
 - **MAJOR** — an existing class or token changes meaning.
 
+## 0.5.0 — 21 November 2026
+
+The November reel was finally watched, frame by frame, instead of being read.
+What it advertises — a rail of objects you browse in depth — is now a primitive,
+and the obvious way to build it does not work.
+
+**Added**
+
+- **The room**, in `css/3d.css`: `.t3-room` and its parts. A rail, a row of
+  objects, one in focus. Every step away from the selection shrinks the object,
+  dims it, and takes the artwork out of focus — scale, opacity and blur, all 2D.
+  Guards: no transition on request, a scroll-snapping strip below 980px instead
+  of a camera, a plain row in print. Tokens: `--t3-room-shrink`,
+  `--t3-room-item-w`, `--t3-room-pad-top`, `--t3-room-ink`, `--t3-room-accent`.
+- **`T3.room(container, options)`** in `js/scene.js`, wired through
+  `data-t3-room` / `data-t3-room-item`. Click, Tab, Left, Right, Home, End; the
+  selection is `aria-current` and follows focus.
+- `demo/index.html`: a fifth band, five invented objects, so the primitive is
+  used rather than described.
+- `docs/reel-pass-november-2026.md` § 1 rewritten: the reel is four labelled
+  interactions, and the shop is a flat row with depth of field, not a walkable
+  room of planes. That correction is the point of watching it.
+- `docs/sources.md`: a "Viewed" status, and the reels marked with it.
+
+**Found**
+
+- **A 3D row cannot be clicked.** The first build put `perspective` on the
+  space, `preserve-3d` on the row and `translateZ` on each object. It rendered
+  correctly and only the selected object was reachable: `elementFromPoint` at
+  the visual centre of four of the five objects returned the row. Two controls
+  isolate it — 2D transforms under `preserve-3d` still fail, `transform-style:
+  flat` fixes all five — so the depth is depth of field and the row stays flat.
+  The measurement is in § 1 of the reel pass, and the reason is in the CSS.
+
+**Unchanged**
+
+- No dependency, no build step, no network request, no new file to copy. The
+  room is 200 lines of CSS and 80 of script that were already there.
+
 ## 0.4.0 — 21 November 2026
 
 Six links researched in one pass, and the pass found a bug in the demo. As with
@@ -158,6 +197,7 @@ scene recedes as you scroll, and cards lean as one piece.
   may tilt at 4/3 degrees. Rule 6 is new, about clipping the window.
 
 **Not ported**
+
 
 - The source project's photographs, prices and shop names. The demo draws its
   own figures in SVG.
