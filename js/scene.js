@@ -8,6 +8,7 @@
      T3.cards(rootEl, { selector })
      T3.reveal(rootEl, { selector, threshold })
      T3.room(roomEl, { itemSelector })           -> { destroy() }
+     T3.wipe(wipeEl, { range })                  -> { destroy() }
      T3.init(rootEl)                            auto-wires the attributes
 
    Markup:
@@ -23,6 +24,8 @@
    `data-t3-room` turns a row of `data-t3-room-item` children into a rail the
    reader can select from. It is the one primitive here with no camera, on
    purpose: see the note above `.t3-room` in css/3d.css.
+   `data-t3-wipe` scrubs one screen out in a horizontal blur while the next
+   one resolves under it, as the section crosses the middle of the viewport.
 
    Nothing here runs on a touch screen, and nothing runs when the reader
    has asked for reduced motion. That is not politeness: a page that tilts
@@ -350,6 +353,69 @@
     };
   }
 
+  /* The wipe: one screen smearing out while the next resolves under it.
+
+     Scroll is the trigger, and the position is the entire state: --t3-wipe-p
+     runs 0 to 1 as the section's centre crosses the middle band of the
+     viewport, and everything the CSS does is a function of it. So the wipe can
+     be held anywhere and measured there, and scrolling back runs it in
+     reverse. It is a scrub, not a playback.
+
+     `range` is the fraction of the viewport the full travel takes. 0.35 is
+     about a third of a screen each side of the section's centre: wider and the
+     smear lingers, narrower and it snaps.
+
+     Refused under prefers-reduced-motion, because half-finished is a blurred
+     page. The class is only added when the scrub is live, so no script — or a
+     reader who asked for less — gets two ordinary panels, stacked. */
+  function wipe(container, options) {
+    var opts = options || {};
+    var range = opts.range == null ? 0.35 : opts.range;
+
+    if (!container || window.matchMedia(CALM).matches) {
+      return { destroy: function () {} };
+    }
+
+    var span = 0;
+    var value = 0;
+
+    var paint = frame(function () {
+      container.style.setProperty("--t3-wipe-p", value.toFixed(3));
+    });
+
+    function onScroll() {
+      var box = container.getBoundingClientRect();
+      var h = window.innerHeight || document.documentElement.clientHeight;
+      if (!h || !span) return;
+      var mid = box.top + box.height / 2;
+      var raw = (h / 2 + span - mid) / (2 * span);
+      var next = Math.round(Math.max(0, Math.min(1, raw)) * 1000) / 1000;
+      if (next === value) return;
+      value = next;
+      paint();
+    }
+
+    function measure() {
+      var h = window.innerHeight || document.documentElement.clientHeight;
+      span = h * range || 1;
+      onScroll();
+    }
+
+    container.classList.add("t3-wipe-live");
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", measure);
+    measure();
+
+    return {
+      destroy: function () {
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", measure);
+        container.classList.remove("t3-wipe-live");
+        container.style.removeProperty("--t3-wipe-p");
+      }
+    };
+  }
+
   function init(root) {
     var scope = root || document;
     var scenes = scope.querySelectorAll("[data-t3-tilt]");
@@ -374,6 +440,12 @@
       container.setAttribute("data-t3-ready", "1");
       room(container);
     });
+
+    Array.prototype.forEach.call(scope.querySelectorAll("[data-t3-wipe]"), function (container) {
+      if (container.getAttribute("data-t3-ready") === "1") return;
+      container.setAttribute("data-t3-ready", "1");
+      wipe(container);
+    });
   }
 
   function start() {
@@ -386,6 +458,7 @@
     cards: cards,
     reveal: reveal,
     room: room,
+    wipe: wipe,
     init: init,
     allowed: allowed
   };
