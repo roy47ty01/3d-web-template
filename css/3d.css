@@ -69,6 +69,10 @@
   --t3-surface-ink: #1d2422;
   --t3-surface-accent: #17c3b2;
 
+  /* The wipe: how far the outgoing screen is blurred at the end of its
+     travel. Smaller on a phone, where a full-width gaussian costs frames. */
+  --t3-wipe-blur: 10px;
+
   /* The wash behind the hero, and where the camera sits. */
   --t3-wash: rgba(251, 231, 194, 0.95);
   --t3-wash-dark: rgba(59, 43, 22, 0.9);
@@ -769,6 +773,171 @@
   margin: 6px 0 0;
 }
 
+/* ---------- the wipe ----------
+   One screen smearing out while the next resolves under it, driven by where
+   the section sits on the page. No canvas, no library, one filter.
+
+   The blur reads as horizontal, and that is a two-line trick. filter() is
+   applied before transform(), so a screen scaled wider than it is tall
+   renders its gaussian as a sideways streak. Scale it equally and it is just
+   out of focus; scale x more than y and it smears.
+
+   The trigger is scroll because the reel's version is scroll-triggered, and
+   because an automatic transition on a timer is a thing a page does to a
+   reader. scene.js writes --t3-wipe-p as a number from 0 to 1; every value
+   below is a function of it, so the whole primitive can be held at any point
+   in its travel and inspected.
+
+   The fallback is not a stiller wipe: half a wipe is a blurred page. With no
+   script, or with motion refused, .t3-wipe-live is absent, the two screens
+   stop sharing a grid cell and stack as ordinary panels — every word
+   readable, both of them printed. */
+.t3-wipe {
+  --t3-wipe-p: 0;
+  /* The field the screens travel through, and the bloom at the cut. These two
+     follow the theme: the field is the page, not a photographed object, and a
+     white bloom on a dark page is a flashbulb, not a transition. The screens
+     themselves keep literal colours, like the surface panel — a screen shot on
+     paper is not a dark screen. */
+  --t3-wipe-field: linear-gradient(158deg, #f6fafc 0%, #dfeaf2 58%, #cfe0eb 100%);
+  --t3-wipe-bloom: #ffffff;
+  position: relative;
+}
+[data-theme="dark"] .t3-wipe {
+  --t3-wipe-field: linear-gradient(158deg, #26343c 0%, #1a2830 58%, #121d24 100%);
+  --t3-wipe-bloom: #8fb4c6;
+}
+
+.t3-wipe-stage {
+  display: grid;
+  gap: 16px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.t3-wipe-screen {
+  /* Stacked by default: no grid-area yet, so each screen gets its own row. */
+  position: relative;
+  display: block;
+  padding: clamp(18px, 2.6vw, 30px);
+  border: 1px solid rgba(29, 36, 34, 0.12);
+  border-radius: 18px;
+  background: #fffdf8;
+  color: #1d2422;
+}
+
+.t3-wipe-screen--dark {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: #101b22;
+  color: #eef4f6;
+}
+
+/* Live: both screens take the same cell, so the stage is as tall as the
+   taller one and nothing has to be given a fixed height. */
+.t3-wipe-live .t3-wipe-stage {
+  gap: 0;
+  /* The field the screens travel through — pale, as the reel's page is, so the
+     gap where the outgoing screen has gone is light rather than a dark void. */
+  background: var(--t3-wipe-field);
+}
+.t3-wipe-live .t3-wipe-screen {
+  grid-area: 1 / 1;
+  align-self: stretch;
+  will-change: transform, filter, opacity;
+}
+
+/* The outgoing screen, on top and opaque at rest, so it hides the next one
+   until it begins to leave. It holds its opacity well past the halfway point
+   and leaves in the last third: a screen that dims early is a dissolve, and
+   the point of this primitive is that it is still legible when it starts to
+   smear. */
+.t3-wipe-live .t3-wipe-screen:first-of-type {
+  z-index: 2;
+  transform-origin: 50% 50%;
+  transform:
+    translate3d(calc(var(--t3-wipe-p) * -8%), 0, 0)
+    scale(calc(1 + var(--t3-wipe-p) * 0.4), calc(1 + var(--t3-wipe-p) * 0.04));
+  filter: blur(calc(min(var(--t3-wipe-p) / 0.8, 1) * var(--t3-wipe-blur)));
+  /* Solid until the last quarter. A screen that dims while it is still
+     sharp is a cross-fade; this one stays a card, out of focus, and only
+     leaves once it is unreadable. */
+  opacity: calc(1 - min(max((var(--t3-wipe-p) - 0.72) / 0.28, 0), 1));
+}
+
+/* The incoming screen arrives late and resolves: blurred and pulled to the
+   right until the outgoing one is mostly gone, then sharp. */
+.t3-wipe-live .t3-wipe-screen:last-of-type {
+  transform:
+    translate3d(calc((1 - var(--t3-wipe-p)) * 6%), 0, 0)
+    scale(calc(0.94 + var(--t3-wipe-p) * 0.06));
+  filter: blur(calc((1 - min(max((var(--t3-wipe-p) - 0.45) / 0.55, 0), 1)) * var(--t3-wipe-blur) * 0.8));
+  opacity: min(max((var(--t3-wipe-p) - 0.45) / 0.55, 0), 1);
+}
+
+/* The flash the reel passes through, at its weakest useful strength: enough to
+   bloom the moment of the cut, not enough to grey out the panel behind it. */
+.t3-wipe-flash {
+  grid-area: 1 / 1;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: 18px;
+  background: radial-gradient(130% 120% at 50% 30%, var(--t3-wipe-bloom) 0%, transparent 76%);
+  opacity: 0;
+}
+.t3-wipe-live .t3-wipe-flash {
+  opacity: calc(min(var(--t3-wipe-p), calc(1 - var(--t3-wipe-p))) * 0.24);
+}
+
+/* The screening inside a screen. Small type, wide tracking, one accent: the
+   same shape on both panels, so the wipe reads as one product changing state
+   rather than two unrelated cards. */
+.t3-wipe-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 clamp(10px, 1.6vw, 18px);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.t3-wipe-tag {
+  color: #b23a1b;
+}
+.t3-wipe-meta {
+  margin-left: auto;
+  /* 0.66, measured: 0.62 composited to 4.52:1 on the paper, which passes and
+     has no margin. The dark panel's twin is 7.42:1 for the same reason. */
+  color: rgba(29, 36, 34, 0.66);
+}
+.t3-wipe-screen--dark .t3-wipe-tag {
+  color: #f2b134;
+}
+.t3-wipe-screen--dark .t3-wipe-meta {
+  color: rgba(238, 244, 246, 0.66);
+}
+/* Display type, because the smear has to have something to smear. A heading
+   set at body size blurs into a grey smudge; a heading set at 4rem becomes the
+   streak. */
+.t3-wipe-title {
+  max-width: 20ch;
+  margin: 0 0 clamp(10px, 1.4vw, 16px);
+  font-size: clamp(2rem, 5.4vw, 3.9rem);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+}
+.t3-wipe-line {
+  max-width: 42ch;
+  margin: 0 0 clamp(16px, 2.4vw, 30px);
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.5;
+}
+.t3-wipe-art {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* ---------- the guards ----------
    None of these are optional. They are why this is a template and not a demo. */
 
@@ -789,6 +958,24 @@
   .t3-turn {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* The wipe refuses differently. Every other guard leaves a stiller version of
+   the same thing; half a wipe is a blurred page, so on request the screens
+   stop sharing a cell and stack — the no-script layout, every word sharp. */
+@media (prefers-reduced-motion: reduce) {
+  .t3-wipe-stage {
+    gap: 16px;
+  }
+  .t3-wipe-live .t3-wipe-screen {
+    grid-area: auto;
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .t3-wipe-flash {
+    display: none !important;
   }
 }
 
@@ -850,6 +1037,20 @@
   }
   .t3-surface-pill {
     border: 1px solid currentColor;
+  }
+  /* A wipe caught mid-travel prints as a smudge. Print the two screens, one
+     after the other, at full ink. */
+  .t3-wipe-live .t3-wipe-screen {
+    grid-area: auto;
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .t3-wipe-flash {
+    display: none !important;
+  }
+  .t3-wipe-stage {
+    gap: 16px;
   }
 }
 
@@ -977,6 +1178,11 @@
   }
   .t3-surface-pill {
     padding: 0 11px;
+  }
+  /* A full-width gaussian is the most expensive thing in this file on a
+     phone. The streak survives at 6px. */
+  .t3-wipe {
+    --t3-wipe-blur: 6px;
   }
 }
 
