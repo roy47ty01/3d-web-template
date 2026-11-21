@@ -24,6 +24,18 @@
   --t3-stage-height: 700px;
   --t3-copy-width: 50%;
 
+  /* The camera's tax on the copy column. A column lifted by --t3-copy-lift is
+     projected AWAY from perspective-origin by
+       lift / (perspective - lift) x origin = 90/1010 x 62% = 5.5% of the scene.
+     Percentage padding resolves against the containing block (the scene, not
+     the column), and then the pad is projected by the same 1.089, so the pad
+     that cancels it is 5.5% / 1.089 = 5.1%.
+     Without it the first ~33px of every hero line falls off the left of the
+     page between 981 and 1100px wide, and nothing reports it: .t3-hero clips,
+     so scrollWidth still equals clientWidth and the overflow test passes. See
+     docs/findings.md, trap 8. */
+  --t3-copy-inset: 5.1%;
+
   /* Must equal the padding and radius of the card the photo sits in, or the
      photo stops meeting the card edge. */
   --t3-card-pad: 22px;
@@ -162,6 +174,9 @@
   position: relative;
   z-index: 2;
   width: var(--t3-copy-width);
+  /* The pad is the projection, cancelled: see --t3-copy-inset above and trap 8. */
+  box-sizing: border-box;
+  padding-left: var(--t3-copy-inset);
   transform: translateZ(var(--t3-copy-lift));
 }
 
@@ -379,6 +394,7 @@
   .t3-copy-front {
     width: auto;
     transform: none;
+    padding-left: 0;
   }
   .t3-photo {
     position: relative;
