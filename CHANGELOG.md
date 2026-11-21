@@ -6,6 +6,52 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — a new primitive or token.
 - **MAJOR** — an existing class or token changes meaning.
 
+## 0.6.0 — 21 November 2026
+
+The reel's fourth interaction, built; and the first transcript taken of a
+source, which corrected a claim this repo had been repeating.
+
+**Added**
+
+- **The touchable surface**, in `css/3d.css`: `.t3-surface-panel`, `-ground`,
+  `-sheet`, `-bar`, `-brand`, `-mark`, `-actions`, `-pill`, `-dot`, `-menu`,
+  `-figure`, `-note`. A ground, a sheet inset into it, and a subject cut out of
+  its background and laid on the sheet, so the silhouette — not a frame — is
+  what meets the paper. **No JavaScript**: a real link, a real button, and a 1px
+  press. Tokens: `--t3-surface-radius`, `--t3-surface-sheet`,
+  `--t3-surface-ink`, `--t3-surface-accent`.
+- `demo/index.html`: a sixth band, with a drawn ground and a drawn portrait,
+  because this template ships no photographs. On a phone the slab stands up at
+  640px and the note card goes; the sheet still crops the figure.
+- `docs/transcripts-november-2026.md`: the transcript of the one reel that
+  carries an audio track, the method that produced it, and the three reels that
+  carry no audio at all.
+
+**Found**
+
+- **The source's chip fails contrast.** White on its turquoise measures 2.21:1,
+  which is trap P2 arriving in someone else's product: a colour is only correct
+  against the surface it sits on. The template keeps the turquoise and uses
+  `#06251f` ink — 7.34:1, measured in Chrome on the rendered chip.
+- **Three of the four reels are served without audio.** `yt-dlp -F` lists no
+  audio representation for them and each file has one stream, so the claim that
+  @kevin.snippet's library names "are spoken" could not be checked and is
+  withdrawn. They are not on screen and not in the file this repo can reach.
+
+**Corrected**
+
+- `docs/reel-pass-november-2026.md` § 3 and `docs/sources.md`, on both points
+  above. `sources.md` gains a "Heard" status; one row earns it.
+- **`README.md` said `scene.js` was 397 lines and `findings.md` held eight
+  traps.** The file is 398 lines, and the repo counts ten traps across two
+  documents. Both now say the right thing, once.
+
+**Unchanged**
+
+- No dependency, no build step, no network request, no binary asset. The surface
+  is CSS, markup and one inline SVG — the transcript's model is a tool used to
+  read a source, not something the template ships.
+
 ## 0.5.0 — 21 November 2026
 
 The November reel was finally watched, frame by frame, instead of being read.

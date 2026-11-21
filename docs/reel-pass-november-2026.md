@@ -21,7 +21,7 @@ plausible reading of the words "spatial browsing" and wrong. The rest held up �
 the library list, the funnels, the comment section — which is worth saying
 plainly, because a doc that only ever confirms itself is not research.
 
-## 1. The reel is four interactions, and one of them is worth having
+## 1. The reel is four interactions, and two of them are worth having
 
 @marcelodesignxh, 18 November 2026. 9.83 seconds, cut as a montage. The caption
 is "Wait for it. 🥷". On screen, in order:
@@ -34,8 +34,9 @@ is "Wait for it. 🥷". On screen, in order:
 | 5.9–8.4s | **Spatial Browsing** | A dark shop, a rail of garments, one selected. Detailed below. |
 | ~9.4s | **Touchable Surface** | A portrait cut out of its background and laid over a cream panel that fills most of the frame, a STORE pill, a small info card at the lower left. |
 
-Four techniques, four labels, one reel. Only the third is something this template
-does not already have, and it is the third that the comments ask about:
+Four techniques, four labels, one reel. Two of them are things this template did
+not have — the third and the fourth, both below — and it is the third that the
+comments ask about:
 
 > "How do I do the spatial browsing? Is there a tutorial?"
 
@@ -92,11 +93,58 @@ What was not taken from the screen: the shop's name, its prices, its SKUs, its
 category names and its garments. The demo invents its own — five objects, SP-01
 to SP-05 — because the brief in `agents/repo-sync.md` is techniques, not content.
 
+### The surface the reel ends on
+
+The last card, at 9.4s, is labelled **Touchable Surface** and holds still for
+about half a second. A full-bleed landscape — turquoise sea, a green headland, a
+dark foreground — a cream sheet inset into it with a faint contour texture, and
+a man cut out of his own background standing on that sheet. His shoulders run
+off the sheet's bottom edge. Top left, a brand set as two stacked words; top
+centre, a two-letter monogram; top right, a turquoise pill and a small menu
+button; lower left, a note card that straddles the sheet's corner and the ground
+behind it. A soft shadow under him, a thin tick at the lower right.
+
+The technique is the cut. No frame is drawn around the figure and no rectangle
+of photograph sits behind him, so the silhouette — not a picture's edge — is what
+meets the paper. A portrait inside a rectangle is a picture of a person; the same
+portrait with the rectangle removed is a person standing on the sheet. One
+subject per surface, or the eye stops knowing which shape to touch.
+
+What was built: `.t3-surface-panel`, `-ground`, `-sheet`, `-bar`, `-brand`,
+`-mark`, `-actions`, `-pill`, `-dot`, `-menu`, `-figure`, `-note` in
+`css/3d.css`, and a sixth band in `demo/index.html`. **No JavaScript.** The chips
+are a real link and a real button, the only movement is a 1px press. It is the
+one primitive here that is pure CSS, and that is the finding: not everything in
+this reel needs a script.
+
+Two things were not copied, and the first is a bug in the source:
+
+- **The chips are white on turquoise.** Measured on the frame's own colours:
+  `#ffffff` on `#17c3b2` is **2.21:1**, against the 4.5:1 a small label needs.
+  This is trap P2 out in the wild: a colour is only correct against a surface,
+  and the surface here is the chip itself.
+  The template keeps the turquoise and swaps the ink to `#06251f`: **7.34:1**,
+  measured in Chrome on the rendered chip. A chip is a place to put text, not a
+  place to lose it.
+- **The figure is drawn, not photographed.** This template ships no photographs
+  and loads nothing, so the cut-out is an SVG portrait. The compositing is what
+  is being shown; the subject is not for sale.
+- The brand name, the monogram, the word in the pill, the note's wording and its
+garment icon are invented. The source's belong to its client.
+
+One detail was left out deliberately: the label "Touchable Surface" is animated
+with thin crop-marks. Those marks are the reel's annotation of the technique,
+not part of the screen it is advertising, and copying them into a demo would put
+the video's captions into the product.
+
 ## 2. The library post, and why it is the useful one
 
-@fifbuilds, 20 September 2026, 7.7K likes: "the most insane 3D, scroll, text & UI
-animation effects you've seen are free on GitHub", with four repositories named.
-All four are real. All four are dependencies a static page cannot take.
+@fifbuilds, 20 September 2026, 7.7K likes: "the most insane 3D, scroll, text &
+UI animation effects you've seen are free on GitHub", with four repositories
+named. The names are also spoken, which was checked by transcribing the audio
+(`transcripts-november-2026.md`); the model mishears three of the four, and the
+caption is what settles them. All four are real. All four are dependencies a
+static page cannot take.
 
 | Library | What it is | Why not |
 |---|---|---|
@@ -132,7 +180,7 @@ clause first.
 | @himanshubuilds, 4 Nov (scrolltide) | copy a prompt, paste it into an AI builder | Already written up in `floating-window-pass.md` and `3d-web-templates.md`. |
 | @tmvdesignstudio, 20 Nov | "comment LAB" for a course and its prompts | A premise worth answering, below. |
 | @digitalmarketingtrending, 13 Nov | "1000s AI codes", ten categories | Nothing to do with 3D websites. AI image prompts. |
-| @kevin.snippet, 3 Sep | "3 Frontend Libraries… Day 1" | 41 seconds of a monitor on a desk showing four sites — a pen product page, a scroll-drawn travel map, a floating-card gallery — with captions "buttery smooth scrolling", "Scroll Animation", "make your site". **The three library names never appear on screen**; they are spoken. The frames settle it, which is one more than the words did. |
+| @kevin.snippet, 3 Sep | "3 Frontend Libraries… Day 1" | 41 seconds of a monitor on a desk showing four sites — a pen product page, a scroll-drawn travel map, a floating-card gallery — with captions "buttery smooth scrolling", "Scroll Animation", "make your site". **The three library names never appear on screen** — and the public download carries no audio track at all, so they are not spoken anywhere this repo can hear. The frames settle the first half; the format list settles the second. |
 
 **The tmv premise is half right and half backwards.** "The moment I switched from
 basic template looking websites and started creating interactive designs, that's
@@ -165,6 +213,12 @@ do in CSS. The other eight need a model, a licence and a download.
 - Trap 8 in `findings.md`, and its fix in `css/3d.css`. That one did not come
   from a reel: it came from auditing the demo, and the hero copy was being
   projected off the left of the page between 981 and 1100px wide.
+- **The touchable surface**, above: `.t3-surface-*` in `css/3d.css`, no script,
+  and the source's chip contrast fixed rather than copied.
+- `docs/transcripts-november-2026.md` — the one transcript that could be made,
+  the three reels that carry no audio at all, and the correction that follows
+  from it: @kevin.snippet's library names are neither on screen nor in the file.
+- `docs/sources.md` gains the "Heard" status for the one reel that earned it.
 - Nothing else. No dependency, no artwork, no network request.
 
 ## 5. Sources
