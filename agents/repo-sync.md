@@ -13,7 +13,7 @@ TARGET_REPO    = roy47ty01/3d-web-template   (branch: main)
 
 ## Read first
 
-1. `docs/findings.md` in the target repo — the seven traps. A change that
+1. `docs/findings.md` in the target repo — the eight traps. A change that
    re-introduces one is rejected, not debated.
 2. `css/3d.css` and `js/scene.js` — the existing vocabulary. Reuse it.
 3. The source project's `agents/feature-map.md`, if it has one, so you know which
@@ -28,7 +28,7 @@ TARGET_REPO    = roy47ty01/3d-web-template   (branch: main)
 3. **No project copy?** No prices, no shop names, no section names, no dates, no
    claims. Strings become placeholders or disappear.
 4. **No guard weakened?** Reduced motion, pointer-only, print, contrast and the
-   seven traps survive. Never port a change that only works because the source
+   eight traps survive. Never port a change that only works because the source
    page is not a phone.
 
 If it fails the test, record why in `CHANGELOG.md` under "Not ported" and stop.
@@ -44,7 +44,7 @@ If it fails the test, record why in `CHANGELOG.md` under "Not ported" and stop.
    names (`.hero-chip`, `.band`) never appear in the template.
 4. **Exercise it in `demo/`.** A primitive with no demo is a claim, not a feature.
 5. **Write the trap down** if the change came from a bug. Add it to
-   `docs/findings.md` under "The seven traps" with the failing code and the fix.
+   `docs/findings.md` under "The eight traps" with the failing code and the fix.
 6. **Verify** (below), then commit in one go.
 7. **Report** what was ported, what was left behind, and why.
 
@@ -63,6 +63,8 @@ In a browser, on the demo:
   negative afterwards. A positive value is trap 6.
 - [ ] Document width **equals** viewport width at 320, 390, 768 and 1280.
   (`document.documentElement.scrollWidth === clientWidth` — measure it, do not eyeball it.)
+- [ ] The hero `h1`'s left edge is not left of the scene's left edge at 981, 1024
+  and 1100. Negative is trap 8, and the overflow test above will not catch it.
 - [ ] With `prefers-reduced-motion: reduce` emulated, the stage never transforms.
 - [ ] Dark theme: no element becomes a dark hole in a light illustration, and no
       halo turns into a brown smudge.
@@ -123,3 +125,6 @@ a new primitive, major for a change that breaks an existing class or token.
 - **Blur on a header with a fixed drawer.** Trap 4. Scopes to min-width 761px.
 - **Trusting a screenshot.** A screenshot is a moment. Measure `scrollWidth`,
   `boxShadow` and contrast instead, then look at the page to judge the design.
+- **Trusting the overflow test alone.** Trap 8 passed every width check while the
+  hero lost the first two letters of every line, because a clipping ancestor
+  removes the overflow instead of reporting it. Measure the text box too.
