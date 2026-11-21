@@ -11,10 +11,15 @@ part worth copying. Photographs get their own file —
 [docs/photographs.md](docs/photographs.md) — because a photograph brings two
 traps that depth alone does not, and both of them cost a visible bug.
 
+If you are an agent working in this repo, read [AGENTS.md](AGENTS.md) first. It
+says which file holds the rule you need, lists all nine traps on one page, and
+ends with the verify-then-commit loop.
+
 ## What is in the box
 
 | Path | What it is |
 |---|---|
+| `AGENTS.md` | The map for an agent: where each rule lives, the nine traps in one table, the couplings, and the verification recipe. |
 | `css/3d.css` | The primitives: scene, stage, pop, sticker, halo, the layered hero, photos in cards, CSS-numbered sections, and the guards. |
 | `js/scene.js` | ~290 lines. Pointer tilt and scroll recede, gated on a real pointer and on `prefers-reduced-motion`. |
 | `index.html` | Sends a bare visit to `demo/`. Nothing else. |
