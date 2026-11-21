@@ -181,8 +181,8 @@
     };
   }
 
-  /* A card with a photo inside it. Four degrees is the ceiling here, because
-     unlike the hero these hold paragraphs. */
+  /* A card with a photo inside it. Three degrees on x and four on y is the
+     ceiling here: unlike the hero, a card holds paragraphs. */
   function cards(root, options) {
     var opts = options || {};
     var selector = opts.selector || "[data-t3-card]";
