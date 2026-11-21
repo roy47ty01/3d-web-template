@@ -186,9 +186,11 @@ Measured on the source page: `translateZ` 0 at scroll 0 and 200, -91px at 420,
 -217px at 700. The cap matters: uncapped, a long page ends up as a zoom. The
 sign matters more — see trap 6.
 
-## 4. The seven traps
+## 4. The eight traps
 
-All seven were hit for real; five of them cost a visible bug.
+All eight were hit for real; six of them cost a visible bug. The eighth was found
+by measuring the demo rather than by shipping it, which is the cheaper way to
+find one.
 
 ### Trap 1 — `perspective` on the child
 
@@ -290,6 +292,54 @@ If you genuinely need the photo to separate, give the card its own
 `perspective` so the camera is at the card's centre, and inset the photo inside
 the card padding (roughly 3% of its width is added on each side at 30px), so
 the expansion lands on padding instead of on the page.
+
+### Trap 8 — a lifted text column is projected out of its container
+
+```css
+.scene { perspective: 1100px; perspective-origin: 62% 42%; }
+.copy  { width: 50%; transform: translateZ(90px); }
+```
+
+A camera whose origin is not at the centre projects every lifted child **away
+from that origin**. The copy column rides 90px forward, so it is projected left
+by
+
+```
+lift / (perspective - lift) x origin = 90 / 1010 x 62% = 5.5% of the scene
+```
+
+which is 63px on a 1140px scene. On a wide page the gutter absorbs it. At
+1024px the gutter is 20px, so the column started at **-33.5px** and the first
+~33px of every hero line was outside the page. Measured: -31.2px at 981,
+-33.5px at 1024, -37.7px at 1100. Above 1280 it is 63px, which the gutter
+finally covers.
+
+Nothing caught it. `scrollWidth` still equalled `clientWidth` at every one of
+those widths, because `.t3-hero` clips the photo that bleeds off the right edge
+and clips the text that bleeds off the left one with the same rule. The overflow
+check passed on a page that was losing the start of every sentence in its hero.
+It was found by measuring the `h1`'s bounding box, not by looking at the page.
+
+Two ways out, and the first is better:
+
+- **Do not lift reading text.** Push the artwork back instead — the arrangement
+  in `photographs.md` § 2.1, where the photograph sits at -150px with
+  `scale(1.16)` and the words stay flat at 0.
+- **Cancel the projection with a pad.** The pad is a percentage of the *scene*,
+  not of the column, because percentage padding resolves against the containing
+  block; and the pad is then projected by the same factor:
+
+```
+pad = 5.5% / 1.089 = 5.1%
+```
+
+  That is `--t3-copy-inset`. Measured after the fix: the text begins 0.3px inside
+  the scene's left edge at 981, 1024, 1100, 1280, 1440 and 1920.
+
+It is trap 7's mechanism — a shared camera projecting a lifted child sideways —
+with a worse symptom. Trap 7 moved a photo 12px over a border. This one deletes
+the first two letters of every line in the hero, silently, on a page that reports
+no overflow.
 
 ## 5. The accessibility contract
 
