@@ -89,6 +89,15 @@ The rule is not up for debate — a change that re-introduces one is rejected.
   slab shot against a landscape does not become a dark slab. The ink on it is
   therefore fixed and measured once — the pill is 7.34:1 on the accent, which is
   the number to keep if the accent changes.
+- **The wipe's travel is one number written twice.** `scene.js` scrubs
+  `--t3-wipe-p` from 0 to 1 over `range: 0.35`, and the stylesheet's thresholds —
+  solid until 0.72, the next screen arriving from 0.45 — only mean anything
+  inside that span. Widen `range` and the smear starts before the section is on
+  screen; narrow it and two blurred screens flash past each other.
+- **The wipe's guard refuses rather than calms.** With no script, or with motion
+  refused, `.t3-wipe-live` is never added and the screens stack. Do not write a
+  "reduced" variant that keeps the overlay at a lower blur: half a wipe is a
+  blurred page, and trap 5 is about text a reader cannot get out of.
 - **`--t3-copy-inset`** is arithmetic, not taste: `lift / (perspective - lift) x
   origin`, divided by the projection factor, as a percentage of the scene. Change
   `--t3-copy-lift`, `--t3-perspective`, `--t3-camera` or `--t3-copy-width` and it
