@@ -6,6 +6,24 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — a new primitive or token.
 - **MAJOR** — an existing class or token changes meaning.
 
+## 0.7.1 — 22 November 2026
+
+A worked example outside the template: the rules applied where the depth is a
+WebGL canvas, so the next project can see what travels and what does not.
+
+**Added**
+
+- `docs/examples/ai-fluency-playbook/`: a case study of the live course site. It
+  records the rules that transferred — text stays flat, the guard refuses, the
+  scene pauses off-screen, print stays a page — the three primitives that did
+  not, and the horizontal-overflow measurements at 390, 768 and 1440. No image
+  is stored here and the promise of zero runtime assets is unchanged.
+
+**Not taken**
+
+- No line of `css/3d.css` or `js/scene.js` was copied into that project, and no
+  project copy came back here. The example exists to be read, not imported.
+
 ## 0.7.0 — 21 November 2026
 
 The reel's transition, built as the third primitive from that pass — and a
