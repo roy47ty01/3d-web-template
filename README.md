@@ -26,6 +26,7 @@ ends with the verify-then-commit loop.
 | `demo/` | A working page that uses every primitive. Open it, move the mouse, scroll. |
 | `docs/findings.md` | The research and the eight traps, with code. Read this before editing the CSS. Two more traps, P1 and P2, live in `docs/photographs.md`; `AGENTS.md` lists all ten on one page. |
 | `docs/photographs.md` | Real photographs in a 3D page: the scrim, the plate, drawn icons instead of emoji, two traps, and how to measure the contrast behind a headline. |
+| `docs/examples/ai-fluency-playbook/` | A shipped course site that applies these rules with a WebGL canvas instead of CSS layers: what transferred, what did not, and the measurements. Documentation only — no page loads it. |
 | `agents/repo-sync.md` | The agent that ports changes from a project back into this repo. |
 | `agents/README.md` | How to install that agent in another project. |
 | `docs/sources.md` | The register: every post this research rests on, when it was read, what it was, and whether the frames were ever seen. |
